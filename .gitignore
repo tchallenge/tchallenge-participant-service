@@ -1,0 +1,15 @@
+# Java
+source/**/*.class
+source/**/*.jar
+source/**/*.war
+
+# Gradle
+source/.gradle/
+source/build/
+source/out/
+
+# Gradle Wrapper
+!source/gradle/wrapper/gradle-wrapper.jar
+
+# Miscellaneous
+source/**/*.log
