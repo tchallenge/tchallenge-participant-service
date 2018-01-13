@@ -7,6 +7,21 @@ import lombok.Data;
 @Builder
 public class SecurityTokenInvoice {
 
+    private String method;
     private String email;
-    private String secret;
+    private String password;
+    private String voucher;
+
+    public boolean isByPassword() {
+        return method != null && method.equalsIgnoreCase("password");
+    }
+
+    public boolean isByVoucher() {
+        return method != null && method.equalsIgnoreCase("voucher");
+    }
+
+    public boolean isValid() {
+        return (isByPassword() && email != null && password != null) ||
+                (isByVoucher() && voucher != null);
+    }
 }

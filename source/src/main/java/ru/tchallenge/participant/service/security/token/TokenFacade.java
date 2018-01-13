@@ -1,6 +1,8 @@
 package ru.tchallenge.participant.service.security.token;
 
 import com.google.common.collect.Sets;
+import ru.tchallenge.participant.service.security.voucher.SecurityVoucher;
+import ru.tchallenge.participant.service.security.voucher.SecurityVoucherManager;
 import spark.*;
 
 import java.time.Duration;
@@ -35,10 +37,21 @@ public final class TokenFacade {
 
     public static Object create(Request request, Response response) {
         SecurityTokenInvoice invoice = body(request, SecurityTokenInvoice.class);
-        if (!CREDENTIALS.contains(invoice)) {
-            throw new RuntimeException("Not authenticated");
+        if (invoice == null || !invoice.isValid()) {
+            throw new RuntimeException("Not sufficient information for authentication");
         }
-        SecurityToken token = createSecurityToken(invoice.getEmail());
+        SecurityToken token = null;
+        if (invoice.isByPassword()) {
+            if (!CREDENTIALS.contains(invoice)) {
+                throw new RuntimeException("Not authenticated");
+            }
+            token = createSecurityToken(invoice.getEmail());
+        } else if (invoice.isByVoucher()) {
+            SecurityVoucher voucher = SecurityVoucherManager.utilize(invoice.getVoucher());
+            token = createSecurityToken(voucher.getEmail());
+        } else {
+            throw new RuntimeException("unknown method of authentication");
+        }
         TOKENS.put(token.getPayload(), token);
         response.header("Authorization", "BEARER " + token.getPayload());
         return token.getId();
@@ -65,7 +78,7 @@ public final class TokenFacade {
     }
 
     private static final Set<SecurityTokenInvoice> CREDENTIALS = Sets.newHashSet(
-            SecurityTokenInvoice.builder().email("ilya.gubarev@gmail.com").secret("*").build()
+            SecurityTokenInvoice.builder().email("ilya.gubarev@gmail.com").password("*").build()
     );
 
     private static final Map<String, SecurityToken> TOKENS = new HashMap<>();

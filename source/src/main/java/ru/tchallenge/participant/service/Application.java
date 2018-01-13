@@ -3,6 +3,7 @@ package ru.tchallenge.participant.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.tchallenge.participant.service.security.token.TokenFacade;
+import ru.tchallenge.participant.service.security.voucher.SecurityVoucherFacade;
 
 import static ru.tchallenge.participant.service.utility.serialization.Json.asJson;
 import static spark.Spark.*;
@@ -33,6 +34,10 @@ public class Application implements Runnable {
                     get("", TokenFacade::retrieve, asJson());
                     delete("", TokenFacade::delete, asJson());
                 });
+            });
+
+            path("/vouchers", () -> {
+                post("/", SecurityVoucherFacade::create, asJson());
             });
 
         });
