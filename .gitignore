@@ -11,5 +11,9 @@ source/out/
 # Gradle Wrapper
 !source/gradle/wrapper/gradle-wrapper.jar
 
+# IntelliJ IDEA
+source/.idea/
+source/**/*.iml
+
 # Miscellaneous
 source/**/*.log
