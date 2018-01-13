@@ -2,7 +2,9 @@ package ru.tchallenge.participant.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.tchallenge.participant.service.security.token.TokenFacade;
 
+import static ru.tchallenge.participant.service.utility.serialization.Json.asJson;
 import static spark.Spark.*;
 
 public class Application implements Runnable {
@@ -21,6 +23,18 @@ public class Application implements Runnable {
 
         get("/version", (request, response) -> {
             return "1.0.0-SNAPSHOT";
+        });
+
+        path("/security", () -> {
+
+            path("/tokens", () -> {
+                post("/", TokenFacade::create, asJson());
+                path("/current", () -> {
+                    get("", TokenFacade::retrieve, asJson());
+                    delete("", TokenFacade::delete, asJson());
+                });
+            });
+
         });
     }
 }
