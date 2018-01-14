@@ -2,15 +2,20 @@ package ru.tchallenge.participant.service;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.tchallenge.participant.service.security.token.TokenFacade;
 import ru.tchallenge.participant.service.security.voucher.SecurityVoucherFacade;
+import spark.Spark;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
+import static ru.tchallenge.participant.service.PersistenceManager.collection;
 import static ru.tchallenge.participant.service.utility.serialization.Json.asJson;
+import static ru.tchallenge.participant.service.utility.serialization.Json.body;
 import static spark.Spark.*;
 
 public class Application implements Runnable {
@@ -34,6 +39,19 @@ public class Application implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        get("/mongotest", (request, response) -> {
+            return collection("test").find().map(document -> document);
+        }, asJson());
+
+        post("/mongotest", (request, response) -> {
+            Map<?, ?> invoice = body(request, Map.class);
+            Document newDocument = new Document();
+            newDocument.put("name", invoice.get("name"));
+            collection("test").insertOne(newDocument);
+            return collection("test").find().map(document -> document);
+        }, asJson());
+
         get("/specification", (request, response) -> {
             response.header("Content-Type","application/yaml");
             return specification;
