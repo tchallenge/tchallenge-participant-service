@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public final class SecurityVoucherManager {
 
-    public static String create(SecurityVoucherInvoice invoice) {
-        SecurityVoucher voucher = SecurityVoucher.builder()
+    public static String create(final SecurityVoucherInvoice invoice) {
+        final SecurityVoucher voucher = SecurityVoucher.builder()
                 .id(UUID.randomUUID().toString())
                 .backlink(invoice.getBacklink())
-                .email(invoice.getEmail())
+                .accountEmail(invoice.getEmail())
                 .payload(UUID.randomUUID().toString())
                 .createdAt(OffsetDateTime.now())
                 .validUntil(OffsetDateTime.now().plusMinutes(15))
@@ -24,16 +24,16 @@ public final class SecurityVoucherManager {
         return voucher.getPayload();
     }
 
-    public static SecurityVoucher utilize(String payload) {
+    public static SecurityVoucher utilizeByPayload(final String payload) {
         SecurityVoucher voucher = VOUCHERS.get(payload);
         if (voucher == null || voucher.isExpired()) {
-            throw new RuntimeException("Security voucher is expired or does not exist");
+            return null;
         }
         VOUCHERS.remove(payload);
         return voucher;
     }
 
-    private static void sendViaEmail(SecurityVoucher voucher) {
+    private static void sendViaEmail(final SecurityVoucher voucher) {
         LOG.info("A new security voucher {} is created", voucher.getId());
     }
 

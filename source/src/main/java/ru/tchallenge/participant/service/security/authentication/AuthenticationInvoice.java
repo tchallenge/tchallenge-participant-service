@@ -1,16 +1,14 @@
-package ru.tchallenge.participant.service.security.token;
+package ru.tchallenge.participant.service.security.authentication;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
-public class SecurityTokenInvoice {
+public final class AuthenticationInvoice {
 
     private String method;
     private String email;
     private String password;
-    private String voucher;
+    private String voucherPayload;
 
     public boolean isByPassword() {
         return method != null && method.equalsIgnoreCase("password");
@@ -22,6 +20,6 @@ public class SecurityTokenInvoice {
 
     public boolean isValid() {
         return (isByPassword() && email != null && password != null) ||
-                (isByVoucher() && voucher != null);
+                (isByVoucher() && voucherPayload != null);
     }
 }

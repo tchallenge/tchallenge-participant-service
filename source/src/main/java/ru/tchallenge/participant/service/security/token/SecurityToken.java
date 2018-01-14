@@ -4,17 +4,16 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 
 @Data
 @Builder
 public class SecurityToken {
 
-    private String id;
-    private String email;
-    private String payload;
-    private OffsetDateTime createdAt;
+    private final String id;
+    private final String accountId;
+    private final String payload;
+    private final OffsetDateTime createdAt;
     private OffsetDateTime validUntil;
 
     public boolean isExpired() {

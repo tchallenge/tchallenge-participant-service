@@ -9,12 +9,12 @@ import java.time.OffsetDateTime;
 @Builder
 public class SecurityVoucher {
 
-    private String id;
-    private String backlink;
-    private String email;
-    private String payload;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime validUntil;
+    private final String id;
+    private final String backlink;
+    private final String accountEmail;
+    private final String payload;
+    private final OffsetDateTime createdAt;
+    private final OffsetDateTime validUntil;
 
     public boolean isExpired() {
         return validUntil.isBefore(OffsetDateTime.now());

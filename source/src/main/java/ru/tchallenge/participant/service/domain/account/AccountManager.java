@@ -18,10 +18,9 @@ public final class AccountManager {
         return ACCOUNTS.find(filter).map(AccountManager::mapIntoAccount).first();
     }
 
-    public static Account retrieveByEmailAndPassword(String email, String password) {
+    public static Account retrieveByEmail(final String email) {
         Document filter = new Document();
         filter.put("email", email);
-        filter.put("passwordHash", password);
         return ACCOUNTS.find(filter).map(AccountManager::mapIntoAccount).first();
     }
 

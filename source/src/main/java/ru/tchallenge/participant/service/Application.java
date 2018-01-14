@@ -6,6 +6,7 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.tchallenge.participant.service.domain.account.AccountFacade;
+import ru.tchallenge.participant.service.security.authentication.AuthenticationFacade;
 import ru.tchallenge.participant.service.security.token.TokenFacade;
 import ru.tchallenge.participant.service.security.voucher.SecurityVoucherFacade;
 import spark.Spark;
@@ -40,6 +41,8 @@ public class Application implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        before("/*", AuthenticationFacade::authenticate);
 
         get("/mongotest", (request, response) -> {
             return collection("test").find().map(document -> document);
