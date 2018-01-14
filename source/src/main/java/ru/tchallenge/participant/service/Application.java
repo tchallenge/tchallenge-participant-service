@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.tchallenge.participant.service.domain.account.AccountFacade;
 import ru.tchallenge.participant.service.security.token.TokenFacade;
 import ru.tchallenge.participant.service.security.voucher.SecurityVoucherFacade;
 import spark.Spark;
@@ -75,6 +76,16 @@ public class Application implements Runnable {
                 post("/", SecurityVoucherFacade::create, asJson());
             });
 
+        });
+
+        path("/accounts", () -> {
+            post("/", AccountFacade::create, asJson());
+            path("/:id", () -> {
+                get("", AccountFacade::retrieve, asJson());
+                put("/password", AccountFacade::updatePassword, asJson());
+                put("/personality", AccountFacade::updatePersonality, asJson());
+                put("/status", AccountFacade::updateStatus, asJson());
+            });
         });
     }
 }
