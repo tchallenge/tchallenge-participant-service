@@ -1,9 +1,14 @@
 package ru.tchallenge.participant.service;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.tchallenge.participant.service.security.token.TokenFacade;
 import ru.tchallenge.participant.service.security.voucher.SecurityVoucherFacade;
+
+import java.io.IOException;
+import java.net.URL;
 
 import static ru.tchallenge.participant.service.utility.serialization.Json.asJson;
 import static spark.Spark.*;
@@ -21,6 +26,18 @@ public class Application implements Runnable {
     public void run() {
 
         log.info("{} started...", applicationName);
+
+        final String specification;
+        try {
+            final URL specificationUrl = Resources.getResource("specification/openapi.yaml");
+            specification = Resources.toString(specificationUrl, Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        get("/specification", (request, response) -> {
+            response.header("Content-Type","application/yaml");
+            return specification;
+        });
 
         get("/version", (request, response) -> {
             return "1.0.0-SNAPSHOT";
