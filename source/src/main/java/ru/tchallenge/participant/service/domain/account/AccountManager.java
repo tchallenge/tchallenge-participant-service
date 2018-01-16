@@ -24,7 +24,9 @@ public final class AccountManager {
 
     private static Document createAccountPersonalityDocument(final AccountPersonality accountPersonality) {
         final Document result = new Document();
-        result.put("quickname", accountPersonality.getQuickname());
+        if (accountPersonality != null) {
+            result.put("quickname", accountPersonality.getQuickname());
+        }
         return result;
     }
 

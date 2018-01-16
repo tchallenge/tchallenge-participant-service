@@ -2,10 +2,13 @@ package ru.tchallenge.participant.service.domain.account;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.tchallenge.participant.service.utility.validation.ValidationAware;
+
+import java.util.Collection;
 
 @Data
 @Builder
-public class AccountPersonality {
+public final class AccountPersonality implements ValidationAware {
 
     private String firstname;
     private String lastname;
@@ -17,4 +20,9 @@ public class AccountPersonality {
     private String github;
     private String bitbucket;
     private String website;
+
+    @Override
+    public void registerViolations(final Collection<String> violations) {
+
+    }
 }

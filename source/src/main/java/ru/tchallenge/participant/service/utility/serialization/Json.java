@@ -1,33 +1,49 @@
 package ru.tchallenge.participant.service.utility.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.omg.CORBA.OBJECT_NOT_EXIST;
+import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 import spark.Request;
-import spark.ResponseTransformer;
+import spark.Response;
 
 import java.io.IOException;
+import java.util.Collections;
 
 public final class Json {
 
-    public static ResponseTransformer asJson() {
-        return RESPONSE_TRANSFORMER;
+    public static String json(final Response response) {
+        return json (null, response);
     }
 
-    public static <T> T body(final Request request, final Class<T> type) {
+    public static String json(final Object data, final Response response) {
+        response.header("Content-Type", "application/json");
         try {
-            return OBJECT_MAPPER.readValue(request.body(), type);
+            return OBJECT_MAPPER.writeValueAsString(data != null ? data : EMPTY);
         } catch (final IOException exception) {
-            throw new RuntimeException("Request body cannot be parsed", exception);
+            throw new RuntimeException("JSON serialization has failed", exception);
         }
     }
 
+    public static <T extends ValidationAware> T body(final Class<T> type, final Request request) {
+        final String requestBody = request.body();
+        if (requestBody == null || requestBody.isEmpty()) {
+            throw new RuntimeException("Request body is missing");
+        }
+        final T result;
+        try {
+            result = OBJECT_MAPPER.readValue(request.body(), type);
+        } catch (final IOException exception) {
+            throw new RuntimeException("Request body format is invalid", exception);
+        }
+        result.validate();
+        return result;
+    }
+
+    private static final Object EMPTY = Collections.EMPTY_MAP;
     private static final ObjectMapper OBJECT_MAPPER;
-    private static final ResponseTransformer RESPONSE_TRANSFORMER;
 
     static {
         OBJECT_MAPPER = new ObjectMapper();
         // TODO: configure the object mapper
-        RESPONSE_TRANSFORMER = OBJECT_MAPPER::writeValueAsString;
     }
 
     private Json() {

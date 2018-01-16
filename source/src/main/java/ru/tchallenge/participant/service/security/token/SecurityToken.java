@@ -2,13 +2,14 @@ package ru.tchallenge.participant.service.security.token;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.tchallenge.participant.service.utility.data.IdAware;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
 
 @Data
 @Builder
-public class SecurityToken {
+public final class SecurityToken implements IdAware {
 
     private final String id;
     private final String accountId;

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public final class SecurityVoucherManager {
 
-    public static String create(final SecurityVoucherInvoice invoice) {
+    public static SecurityVoucher create(final SecurityVoucherInvoice invoice) {
         final SecurityVoucher voucher = SecurityVoucher.builder()
                 .id(UUID.randomUUID().toString())
                 .backlink(invoice.getBacklink())
@@ -21,7 +21,7 @@ public final class SecurityVoucherManager {
                 .build();
         VOUCHERS.put(voucher.getPayload(), voucher);
         sendViaEmail(voucher);
-        return voucher.getPayload();
+        return voucher;
     }
 
     public static SecurityVoucher utilizeByPayload(final String payload) {

@@ -2,14 +2,15 @@ package ru.tchallenge.participant.service.domain.account;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.tchallenge.participant.service.utility.data.IdAware;
 
 @Data
 @Builder
-public class Account {
+public final class Account implements IdAware {
 
-    private String id;
-    private String email;
-    private String passwordHash;
-    private AccountPersonality personality;
-    private String status;
+    private final String id;
+    private final String email;
+    private final String passwordHash;
+    private final AccountPersonality personality;
+    private final String status;
 }

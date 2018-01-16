@@ -2,12 +2,13 @@ package ru.tchallenge.participant.service.security.voucher;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.tchallenge.participant.service.utility.data.IdAware;
 
 import java.time.OffsetDateTime;
 
 @Data
 @Builder
-public class SecurityVoucher {
+public final class SecurityVoucher implements IdAware {
 
     private final String id;
     private final String backlink;

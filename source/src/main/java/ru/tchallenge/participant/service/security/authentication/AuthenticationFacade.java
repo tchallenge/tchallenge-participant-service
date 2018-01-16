@@ -31,10 +31,7 @@ public final class AuthenticationFacade {
     }
 
     private static Authentication authenticateByInvoice(final Request request) {
-        final AuthenticationInvoice invoice = body(request, AuthenticationInvoice.class);
-        if (invoice == null || !invoice.isValid()) {
-            throw new RuntimeException("Authentication invoice is invalid");
-        }
+        final AuthenticationInvoice invoice = body(AuthenticationInvoice.class, request);
         final Authentication authentication;
         if (invoice.isByPassword()) {
             authentication = authenticateByPassword(invoice.getEmail(), invoice.getPassword());

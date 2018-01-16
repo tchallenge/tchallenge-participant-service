@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public final class SecurityRegistrationManager {
 
-    public static Object create(final SecurityRegistrationInvoice invoice) {
+    public static SecurityRegistration create(final SecurityRegistrationInvoice invoice) {
         AccountInvoice accountInvoice = AccountInvoice.builder()
                 .email(invoice.getEmail())
                 .password(invoice.getPassword())
@@ -18,7 +18,9 @@ public final class SecurityRegistrationManager {
                 .build();
         AccountManager.create(accountInvoice);
         // TODO: send a email with voucher
-        return UUID.randomUUID().toString();
+        return SecurityRegistration.builder()
+                .id(UUID.randomUUID().toString())
+                .build();
     }
 
     private SecurityRegistrationManager() {

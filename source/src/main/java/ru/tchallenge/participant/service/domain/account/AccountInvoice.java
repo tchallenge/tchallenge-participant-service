@@ -2,12 +2,25 @@ package ru.tchallenge.participant.service.domain.account;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.tchallenge.participant.service.utility.validation.ValidationAware;
+
+import java.util.Collection;
 
 @Data
 @Builder
-public class AccountInvoice {
+public final class AccountInvoice implements ValidationAware {
 
     private String email;
     private String password;
     private AccountPersonality personality;
+
+    @Override
+    public void registerViolations(final Collection<String> violations) {
+        if (email == null || email.isEmpty()) {
+            violations.add("Account email is invalid");
+        }
+        if (password == null || password.isEmpty()) {
+            violations.add("Account password is invalid");
+        }
+    }
 }
