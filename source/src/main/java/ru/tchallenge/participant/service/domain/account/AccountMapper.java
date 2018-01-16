@@ -2,6 +2,8 @@ package ru.tchallenge.participant.service.domain.account;
 
 import org.bson.Document;
 
+import java.time.ZoneOffset;
+
 public final class AccountMapper {
 
     public static final AccountMapper INSTANCE = new AccountMapper();
@@ -12,6 +14,7 @@ public final class AccountMapper {
                 .status(document.getString("status"))
                 .email(document.getString("email"))
                 .personality(intoAccountPersonality((Document) document.get("personality")))
+                .registeredAt(document.getDate("registeredAt").toInstant())
                 .build();
     }
 
