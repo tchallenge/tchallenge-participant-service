@@ -20,6 +20,14 @@ public final class AccountSystemManager {
         return accountRepository.insert(document);
     }
 
+    public void updatePassword(final String id, final String password) {
+        accountPasswordValidator.validate(password);
+        final Document accountDocument = accountRepository.findById(id);
+        final String passwordHash = accountPasswordHashEngine.hash(password);
+        accountDocument.put("passwordHash", passwordHash);
+        accountRepository.update(accountDocument);
+    }
+
     public Account findByEmail(final String email) {
         final Document document = accountRepository.findByEmail(email);
         if (document == null) {

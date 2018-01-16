@@ -11,6 +11,7 @@ public final class AuthenticationInvoice implements ValidationAware {
     private String method;
     private String email;
     private String password;
+    private String passwordUpdate;
     private String voucherPayload;
 
     public boolean isByPassword() {
@@ -19,6 +20,10 @@ public final class AuthenticationInvoice implements ValidationAware {
 
     public boolean isByVoucher() {
         return method != null && method.equalsIgnoreCase("voucher");
+    }
+
+    public boolean isPasswordUpdateRequested() {
+        return isByVoucher() && passwordUpdate != null;
     }
 
     @Override

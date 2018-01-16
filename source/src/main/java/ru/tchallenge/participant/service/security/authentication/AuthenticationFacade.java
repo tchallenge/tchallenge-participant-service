@@ -36,7 +36,7 @@ public final class AuthenticationFacade {
         if (invoice.isByPassword()) {
             authentication = authenticateByPassword(invoice.getEmail(), invoice.getPassword());
         } else if (invoice.isByVoucher()) {
-            authentication = authenticateByVoucherPayload(invoice.getVoucherPayload());
+            authentication = authenticateByVoucherPayload(invoice);
         } else {
             throw new RuntimeException("Authentication method is not supported");
         }
@@ -80,7 +80,8 @@ public final class AuthenticationFacade {
                 .build();
     }
 
-    private static Authentication authenticateByVoucherPayload(final String payload) {
+    private static Authentication authenticateByVoucherPayload(final AuthenticationInvoice invoice) {
+        final String payload = invoice.getVoucherPayload();
         final SecurityVoucher voucher = SecurityVoucherManager.utilizeByPayload(payload);
         if (voucher == null) {
             throw new RuntimeException("Security voucher is expired or does not exist");
@@ -88,6 +89,9 @@ public final class AuthenticationFacade {
         final Account account = ACCOUNT_SYSTEM_MANAGER.findByEmail(voucher.getAccountEmail());
         if (accountIsIllegalForAuthentication(account)) {
             throw new RuntimeException("Account is illegal for authentication");
+        }
+        if (invoice.isPasswordUpdateRequested()) {
+            ACCOUNT_SYSTEM_MANAGER.updatePassword(account.getId(), invoice.getPasswordUpdate());
         }
         return Authentication.builder()
                 .accountId(account.getId())
