@@ -2,7 +2,7 @@ package ru.tchallenge.participant.service.security.authentication;
 
 import com.google.common.collect.Sets;
 import ru.tchallenge.participant.service.domain.account.Account;
-import ru.tchallenge.participant.service.domain.account.AccountManager;
+import ru.tchallenge.participant.service.domain.account.AccountSystemManager;
 import ru.tchallenge.participant.service.security.token.SecurityToken;
 import ru.tchallenge.participant.service.security.token.TokenManager;
 import ru.tchallenge.participant.service.security.voucher.SecurityVoucher;
@@ -44,7 +44,7 @@ public final class AuthenticationFacade {
     }
 
     private static Authentication authenticateByPassword(final String email, final String password) {
-        final Account account = AccountManager.retrieveByEmail(email);
+        final Account account = ACCOUNT_SYSTEM_MANAGER.findByEmail(email);
         if (!account.getPasswordHash().equals(password)) {
             throw new RuntimeException("Account is password is illegal");
         }
@@ -68,7 +68,7 @@ public final class AuthenticationFacade {
         if (token == null) {
             return null;
         }
-        final Account account = AccountManager.retrieveById(token.getAccountId());
+        final Account account = ACCOUNT_SYSTEM_MANAGER.findById(token.getAccountId());
         if (accountIsIllegalForAuthentication(account)) {
             return null;
         }
@@ -85,7 +85,7 @@ public final class AuthenticationFacade {
         if (voucher == null) {
             throw new RuntimeException("Security voucher is expired or does not exist");
         }
-        final Account account = AccountManager.retrieveByEmail(voucher.getAccountEmail());
+        final Account account = ACCOUNT_SYSTEM_MANAGER.findByEmail(voucher.getAccountEmail());
         if (accountIsIllegalForAuthentication(account)) {
             throw new RuntimeException("Account is illegal for authentication");
         }
@@ -101,6 +101,7 @@ public final class AuthenticationFacade {
         return ILLEGAL_STATUSES.contains(account.getStatus());
     }
 
+    private static final AccountSystemManager ACCOUNT_SYSTEM_MANAGER = AccountSystemManager.INSTANCE;
     private static final Set<String> ILLEGAL_STATUSES = Sets.newHashSet("SUSPENDED", "BANNED", "DELETED");
 
     private AuthenticationFacade() {

@@ -10,10 +10,6 @@ import java.util.Collection;
 @Builder
 public class AccountPasswordUpdateInvoice implements ValidationAware {
 
-    public static boolean validPassword(String password) {
-        return password != null && password.length() >= 8;
-    }
-
     private String current;
     private String desired;
 
@@ -22,8 +18,8 @@ public class AccountPasswordUpdateInvoice implements ValidationAware {
         if (current == null) {
             violations.add("Current password is missing");
         }
-        if (!validPassword(desired)) {
-            violations.add("New desired password is invalid");
+        if (desired == null || desired.isEmpty()) {
+            violations.add("Account password is invalid");
         }
     }
 }

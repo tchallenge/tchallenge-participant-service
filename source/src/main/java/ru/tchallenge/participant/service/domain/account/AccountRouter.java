@@ -2,31 +2,42 @@ package ru.tchallenge.participant.service.domain.account;
 
 import spark.RouteGroup;
 
+import static ru.tchallenge.participant.service.utility.serialization.Json.body;
 import static ru.tchallenge.participant.service.utility.serialization.Json.json;
 import static spark.Spark.*;
 
 public final class AccountRouter implements RouteGroup {
 
+    public static final AccountRouter INSTANCE = new AccountRouter();
+
     @Override
     public void addRoutes() {
-        post("/", (request, response) -> {
-            throw new UnsupportedOperationException();
-        });
-        path("/:id", () -> {
+        path("/current", () -> {
             get("", (request, response) -> {
-                final String id = request.params("id");
-                final Account account = AccountManager.retrieveById(id);
-                return json(account.justId(), response);
+                final Account account = accountManager.retrieveCurrent();
+                return json(account, response);
             });
             put("/password", (request, response) -> {
-                throw new UnsupportedOperationException();
+                final AccountPasswordUpdateInvoice invoice = body(AccountPasswordUpdateInvoice.class, request);
+                accountManager.updateCurrentPassword(invoice);
+                return json(response);
             });
             put("/personality", (request, response) -> {
-                throw new UnsupportedOperationException();
+                final AccountPersonality invoice = body(AccountPersonality.class, request);
+                accountManager.updateCurrentPersonality(invoice);
+                return json(response);
             });
             put("/status", (request, response) -> {
-                throw new UnsupportedOperationException();
+                final AccountStatusUpdateInvoice invoice = body(AccountStatusUpdateInvoice.class, request);
+                accountManager.updateCurrentStatus(invoice);
+                return json(response);
             });
         });
+    }
+
+    private final AccountManager accountManager = AccountManager.INSTANCE;
+
+    private AccountRouter() {
+
     }
 }

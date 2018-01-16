@@ -48,6 +48,6 @@ public class Application implements Runnable {
 
         path("/security", new SecurityRouter());
 
-        path("/accounts", new AccountRouter());
+        path("/accounts", AccountRouter.INSTANCE);
     }
 }

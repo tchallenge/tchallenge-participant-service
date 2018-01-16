@@ -1,7 +1,7 @@
 package ru.tchallenge.participant.service.security.token;
 
 import ru.tchallenge.participant.service.domain.account.Account;
-import ru.tchallenge.participant.service.domain.account.AccountManager;
+import ru.tchallenge.participant.service.domain.account.AccountSystemManager;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -19,7 +19,7 @@ public final class TokenManager {
 
     public static SecurityToken retrieveByPayload(final String payload) {
         if (payload.equals("PREDEFINED")) {
-            final Account account = AccountManager.retrieveByEmail("test.user1@example.com");
+            final Account account = ACCOUNT_SYSTEM_MANAGER.findByEmail("test.user1@example.com");
             return createNewToken(account.getId());
         }
         final SecurityToken token = TOKENS.get(payload);
@@ -47,6 +47,7 @@ public final class TokenManager {
 
     private static final Map<String, SecurityToken> TOKENS = new HashMap<>();
     private static final Duration TOKEN_EXPIRATION_PERIOD = Duration.ofHours(1);
+    private static final AccountSystemManager ACCOUNT_SYSTEM_MANAGER = AccountSystemManager.INSTANCE;
 
     private TokenManager() {
 

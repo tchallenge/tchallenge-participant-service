@@ -65,16 +65,13 @@ security:
 
 paths:
 
-  /accounts/{id}:
+  /accounts/current:
 
     get:
       summary: Retrieves an existing account
       operationId: getAccount
       tags:
         - accounts
-      parameters:
-        - $ref: '#/components/parameters/Id'
-        - $ref: '#/components/parameters/SecurityTokenHeader'
       responses:
         '200':
           description: The requested account
@@ -85,16 +82,13 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /accounts/{id}/password:
+  /accounts/current/password:
 
     put:
       summary: Updates the password of an existing account
       operationId: updateAccountPassword
       tags:
         - accounts
-      parameters:
-        - $ref: '#/components/parameters/Id'
-        - $ref: '#/components/parameters/SecurityTokenHeader'
       requestBody:
         required: true
         content:
@@ -107,16 +101,13 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /accounts/{id}/personality:
+  /accounts/current/personality:
 
     put:
       summary: Updates the personal information of an existing account
       operationId: updateAccountPersonality
       tags:
         - accounts
-      parameters:
-        - $ref: '#/components/parameters/Id'
-        - $ref: '#/components/parameters/SecurityTokenHeader'
       requestBody:
         required: true
         content:
@@ -129,16 +120,13 @@ paths:
         default:
           $ref: '#/components/responses/Error'
 
-  /accounts/{id}/status:
+  /accounts/current/status:
 
     put:
       summary: Updates the status of an existing account
       operationId: updateAccountStatus
       tags:
         - accounts
-      parameters:
-        - $ref: '#/components/parameters/Id'
-        - $ref: '#/components/parameters/SecurityTokenHeader'
       requestBody:
         required: true
         content:
