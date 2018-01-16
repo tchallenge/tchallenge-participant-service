@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.tchallenge.participant.service.domain.account.AccountFacade;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationFacade;
+import ru.tchallenge.participant.service.security.registration.SecurityRegistrationRouter;
 import ru.tchallenge.participant.service.security.token.TokenFacade;
 import ru.tchallenge.participant.service.security.voucher.SecurityVoucherFacade;
-import spark.Spark;
 
 import java.io.IOException;
 import java.net.URL;
@@ -66,6 +66,8 @@ public class Application implements Runnable {
         });
 
         path("/security", () -> {
+
+            path("/registrations", new SecurityRegistrationRouter());
 
             path("/tokens", () -> {
                 post("/", TokenFacade::create, asJson());

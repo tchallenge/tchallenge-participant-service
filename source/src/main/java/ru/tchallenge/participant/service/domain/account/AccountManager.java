@@ -9,7 +9,23 @@ import static ru.tchallenge.participant.service.PersistenceManager.collection;
 public final class AccountManager {
 
     public static Account create(AccountInvoice invoice) {
-        throw new UnsupportedOperationException();
+        final Document filter = new Document();
+        filter.put("email", invoice.getEmail());
+        if (ACCOUNTS.count(filter) > 0) {
+            throw new RuntimeException("Account with specified email already exists");
+        }
+        final Document accountDocument = new Document();
+        accountDocument.put("email", invoice.getEmail());
+        accountDocument.put("passwordHash", invoice.getPassword());
+        accountDocument.put("personality", createAccountPersonalityDocument(invoice.getPersonality()));
+        ACCOUNTS.insertOne(accountDocument);
+        return ACCOUNTS.find(filter).map(AccountManager::mapIntoAccount).first();
+    }
+
+    private static Document createAccountPersonalityDocument(final AccountPersonality accountPersonality) {
+        final Document result = new Document();
+        result.put("quickname", accountPersonality.getQuickname());
+        return result;
     }
 
     public static Account retrieveById(String id) {
