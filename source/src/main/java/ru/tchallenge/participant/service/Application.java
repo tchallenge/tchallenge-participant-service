@@ -49,5 +49,10 @@ public class Application implements Runnable {
         path("/security", new SecurityRouter());
 
         path("/accounts", AccountRouter.INSTANCE);
+
+        exception(Exception.class, (e, request, response) -> {
+            response.status(400);
+            response.body(e.getMessage());
+        });
     }
 }
