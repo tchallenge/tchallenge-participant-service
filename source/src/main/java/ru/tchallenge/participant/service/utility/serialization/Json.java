@@ -1,12 +1,14 @@
 package ru.tchallenge.participant.service.utility.serialization;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
-import java.util.Collections;
 
 public final class Json {
 
@@ -38,12 +40,16 @@ public final class Json {
         return result;
     }
 
-    private static final Object EMPTY = Collections.EMPTY_MAP;
+    private static final Object EMPTY = new Object();
     private static final ObjectMapper OBJECT_MAPPER;
 
     static {
         OBJECT_MAPPER = new ObjectMapper();
-        // TODO: configure the object mapper
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        OBJECT_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        OBJECT_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        OBJECT_MAPPER.findAndRegisterModules();
     }
 
     private Json() {
