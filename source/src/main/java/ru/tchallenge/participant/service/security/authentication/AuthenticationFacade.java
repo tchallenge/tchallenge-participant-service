@@ -60,7 +60,7 @@ public final class AuthenticationFacade {
 
     private static Authentication authenticateByTokenPayloadIfPossible(final Request request) {
         final String header = request.headers("Authorization");
-        if (header == null || header.isEmpty() || !header.startsWith("BEARER ")) {
+        if (header == null || header.isEmpty() || !header.startsWith("BEARER: ")) {
             return null;
         }
         final String tokenPayload = header.split(" ")[1];

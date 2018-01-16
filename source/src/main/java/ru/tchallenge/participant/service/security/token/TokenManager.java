@@ -1,5 +1,8 @@
 package ru.tchallenge.participant.service.security.token;
 
+import ru.tchallenge.participant.service.domain.account.Account;
+import ru.tchallenge.participant.service.domain.account.AccountManager;
+
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -16,7 +19,8 @@ public final class TokenManager {
 
     public static SecurityToken retrieveByPayload(final String payload) {
         if (payload.equals("PREDEFINED")) {
-            return createNewToken("predefined.user");
+            final Account account = AccountManager.retrieveByEmail("test.user1@example.com");
+            return createNewToken(account.getId());
         }
         final SecurityToken token = TOKENS.get(payload);
         if (token == null || token.isExpired()) {
