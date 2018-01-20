@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.tchallenge.participant.service.domain.account.AccountRouter;
+import ru.tchallenge.participant.service.domain.event.EventRouter;
 import ru.tchallenge.participant.service.security.SecurityRouter;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationFacade;
 
@@ -49,6 +50,8 @@ public class Application implements Runnable {
         path("/security", new SecurityRouter());
 
         path("/accounts", AccountRouter.INSTANCE);
+
+        path("/events", EventRouter.INSTANCE);
 
         exception(Exception.class, (e, request, response) -> {
             response.status(400);
