@@ -1,12 +1,12 @@
 package ru.tchallenge.participant.service.domain.maturity;
 
-import lombok.Builder;
-import lombok.Data;
+public enum Maturity {
 
-@Data
-@Builder
-public final class Maturity {
+    JUNIOR,
 
-    private final String caption;
-    private final String textcode;
+    INTERMEDIATE,
+
+    SENIOR,
+
+    EXPERT
 }
