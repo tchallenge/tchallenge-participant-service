@@ -2,8 +2,8 @@ package ru.tchallenge.participant.service.domain.workbook;
 
 import com.google.common.collect.ImmutableList;
 import org.bson.Document;
-import ru.tchallenge.participant.service.domain.assignment.Assignment;
-import ru.tchallenge.participant.service.domain.assignment.AssignmentProjector;
+import ru.tchallenge.participant.service.domain.workbook.assignment.Assignment;
+import ru.tchallenge.participant.service.domain.workbook.assignment.AssignmentProjector;
 import ru.tchallenge.participant.service.domain.problem.ProblemRepository;
 import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
 import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
@@ -24,7 +24,7 @@ public final class WorkbookProjector extends GenericProjector {
     }
 
     public Workbook workbook(final Document document) {
-        final String status = document.getString("status");
+        final WorkbookStatus status = WorkbookStatus.valueOf(document.getString("status"));
         final boolean classified = classifiedByStatus(status);
         return Workbook.builder()
                 .id(DocumentWrapper.fromDocument(document).getId())
@@ -36,8 +36,8 @@ public final class WorkbookProjector extends GenericProjector {
                 .build();
     }
 
-    private boolean classifiedByStatus(final String status) {
-        return !status.equals("ASSESSED");
+    private boolean classifiedByStatus(final WorkbookStatus status) {
+        return status != WorkbookStatus.ASSESSED;
     }
 
     private List<Assignment> assignments(final Document document, final boolean classified) {

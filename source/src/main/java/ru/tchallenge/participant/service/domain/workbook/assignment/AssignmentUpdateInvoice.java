@@ -1,4 +1,4 @@
-package ru.tchallenge.participant.service.domain.assignment;
+package ru.tchallenge.participant.service.domain.workbook.assignment;
 
 import lombok.Builder;
 import lombok.Data;

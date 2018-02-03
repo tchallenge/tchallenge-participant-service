@@ -5,7 +5,7 @@ import ru.tchallenge.participant.service.utility.data.IdAware;
 
 import java.util.Objects;
 
-public final class DocumentWrapper implements IdAware {
+public class DocumentWrapper implements IdAware {
 
     public static DocumentWrapper fromDocument(final Document document) {
         return new DocumentWrapper(document);

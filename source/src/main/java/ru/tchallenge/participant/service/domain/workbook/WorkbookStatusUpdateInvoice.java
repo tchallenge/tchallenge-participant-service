@@ -8,12 +8,14 @@ import java.util.Collection;
 
 @Data
 @Builder
-public final class WorkbookUpdateInvoice implements ValidationAware {
+public final class WorkbookStatusUpdateInvoice implements ValidationAware {
 
-    private String status;
+    private WorkbookStatus status;
 
     @Override
     public void registerViolations(final Collection<String> violations) {
-
+        if (status == null) {
+            violations.add("status is missing");
+        }
     }
 }
