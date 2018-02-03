@@ -14,7 +14,7 @@ public final class EventManager {
     public Event retrieveById(final String id) {
         authenticated();
         final Document eventDocument = eventRepository.findById(id);
-        return eventMapper.intoEvent(eventDocument);
+        return eventProjector.intoEvent(eventDocument);
     }
 
     public EventSearchResult retrieveSearchResult(final EventSearchInvoice invoice) {
@@ -24,7 +24,7 @@ public final class EventManager {
                 .find(filter)
                 .skip(invoice.getOffset())
                 .limit(invoice.getLimit())
-                .map(eventMapper::intoEvent)
+                .map(eventProjector::intoEvent)
                 .into(Lists.newArrayList());
         return EventSearchResult.builder()
                 .items(ImmutableList.copyOf(events))
@@ -36,7 +36,7 @@ public final class EventManager {
         return AuthenticationContext.getAuthentication().getAccountId();
     }
 
-    private final EventMapper eventMapper = EventMapper.INSTANCE;
+    private final EventProjector eventProjector = EventProjector.INSTANCE;
     private final EventRepository eventRepository = EventRepository.INSTANCE;
 
     private EventManager() {

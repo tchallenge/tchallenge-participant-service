@@ -1,14 +1,16 @@
 package ru.tchallenge.participant.service.domain.event;
 
 import org.bson.Document;
+import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
 
-public final class EventMapper {
+public final class EventProjector extends GenericProjector {
 
-    public static final EventMapper INSTANCE = new EventMapper();
+    public static final EventProjector INSTANCE = new EventProjector();
 
     public Event intoEvent(final Document document) {
         return Event.builder()
-                .id(document.getObjectId("_id").toHexString())
+                .id(DocumentWrapper.fromDocument(document).getId())
                 .textcode(document.getString("textcode"))
                 .caption(document.getString("caption"))
                 .description(document.getString("description"))
@@ -21,14 +23,14 @@ public final class EventMapper {
 
     public Event intoEventShort(final Document document) {
         return Event.builder()
-                .id(document.getObjectId("_id").toHexString())
+                .id(DocumentWrapper.fromDocument(document).getId())
                 .textcode(document.getString("textcode"))
                 .caption(document.getString("caption"))
                 .status(document.getString("status"))
                 .build();
     }
 
-    private EventMapper() {
+    private EventProjector() {
 
     }
 }

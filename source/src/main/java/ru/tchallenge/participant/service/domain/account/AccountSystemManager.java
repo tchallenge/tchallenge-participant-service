@@ -1,12 +1,14 @@
 package ru.tchallenge.participant.service.domain.account;
 
 import org.bson.Document;
+import ru.tchallenge.participant.service.utility.data.IdAware;
+import ru.tchallenge.participant.service.utility.persistence.ObjectIdWrapper;
 
 public final class AccountSystemManager {
 
     public static final AccountSystemManager INSTANCE = new AccountSystemManager();
 
-    public String create(final AccountInvoice invoice) {
+    public IdAware create(final AccountInvoice invoice) {
         accountPasswordValidator.validate(invoice.getPassword());
         if (accountRepository.findByEmail(invoice.getEmail()) != null) {
             throw new RuntimeException("Account with such email already exists");
@@ -17,7 +19,8 @@ public final class AccountSystemManager {
         document.put("status", "APPROVED");
         final Document personalityDocument = createAccountPersonalityDocument(invoice.getPersonality());
         document.put("personality", personalityDocument);
-        return accountRepository.insert(document);
+        accountRepository.insert(document);
+        return accountProjector.justId(document);
     }
 
     public void updatePassword(final String id, final String password) {
@@ -25,7 +28,7 @@ public final class AccountSystemManager {
         final Document accountDocument = accountRepository.findById(id);
         final String passwordHash = accountPasswordHashEngine.hash(password);
         accountDocument.put("passwordHash", passwordHash);
-        accountRepository.update(accountDocument);
+        accountRepository.update(ObjectIdWrapper.fromDocument(accountDocument).getObjectId(), accountDocument);
     }
 
     public Account findByEmail(final String email) {
@@ -33,7 +36,7 @@ public final class AccountSystemManager {
         if (document == null) {
             return null;
         }
-        return accountMapper.intoAccountShort(document);
+        return accountProjector.intoAccountShort(document);
     }
 
     public Account findById(final String id) {
@@ -41,7 +44,7 @@ public final class AccountSystemManager {
         if (document == null) {
             return null;
         }
-        return accountMapper.intoAccountShort(document);
+        return accountProjector.intoAccountShort(document);
     }
 
     public Document createAccountPersonalityDocument(final AccountPersonality accountPersonality) {
@@ -61,7 +64,7 @@ public final class AccountSystemManager {
         return result;
     }
 
-    private final AccountMapper accountMapper = AccountMapper.INSTANCE;
+    private final AccountProjector accountProjector = AccountProjector.INSTANCE;
     private final AccountPasswordHashEngine accountPasswordHashEngine = AccountPasswordHashEngine.INSTANCE;
     private final AccountPasswordValidator accountPasswordValidator = AccountPasswordValidator.INSTANCE;
     private final AccountRepository accountRepository = AccountRepository.INSTANCE;

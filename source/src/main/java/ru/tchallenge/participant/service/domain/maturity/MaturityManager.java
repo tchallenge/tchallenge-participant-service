@@ -11,11 +11,11 @@ public final class MaturityManager {
     public List<Maturity> retrieveByTextcodes(final String... textcodes) {
         return maturityRepository
                 .findByTextcodes(textcodes)
-                .map(maturityMapper::intoMaturity)
+                .map(maturityProjector::intoMaturity)
                 .into(Lists.newArrayList());
     }
 
-    private final MaturityMapper maturityMapper = MaturityMapper.INSTANCE;
+    private final MaturityProjector maturityProjector = MaturityProjector.INSTANCE;
     private final MaturityRepository maturityRepository = MaturityRepository.INSTANCE;
 
     private MaturityManager() {

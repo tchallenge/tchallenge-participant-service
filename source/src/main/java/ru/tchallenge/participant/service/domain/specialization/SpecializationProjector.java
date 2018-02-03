@@ -1,10 +1,11 @@
 package ru.tchallenge.participant.service.domain.specialization;
 
 import org.bson.Document;
+import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
 
-public final class SpecializationMapper {
+public final class SpecializationProjector extends GenericProjector {
 
-    public static final SpecializationMapper INSTANCE = new SpecializationMapper();
+    public static final SpecializationProjector INSTANCE = new SpecializationProjector();
 
     public Specialization intoSpecialization(final Document document) {
         return Specialization.builder()
@@ -13,7 +14,7 @@ public final class SpecializationMapper {
                 .build();
     }
 
-    private SpecializationMapper() {
+    private SpecializationProjector() {
 
     }
 }

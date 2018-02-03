@@ -2,8 +2,10 @@ package ru.tchallenge.participant.service.domain.assignment;
 
 import org.bson.Document;
 import ru.tchallenge.participant.service.domain.problem.ProblemProjector;
+import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
 
-public final class AssignmentProjector {
+public final class AssignmentProjector extends GenericProjector {
 
     public static final AssignmentProjector INSTANCE = new AssignmentProjector();
 
@@ -17,7 +19,7 @@ public final class AssignmentProjector {
                                      final Document problemDocument,
                                      final boolean classified) {
         return Assignment.builder()
-                .id(assignmentDocument.getObjectId("_id").toHexString())
+                .id(DocumentWrapper.fromDocument(assignmentDocument).getId())
                 .problem(problemProjector.intoProblem(problemDocument, classified))
                 .score((assignmentDocument.getInteger("score")))
                 .scoreMax((assignmentDocument.getInteger("scoreMax")))

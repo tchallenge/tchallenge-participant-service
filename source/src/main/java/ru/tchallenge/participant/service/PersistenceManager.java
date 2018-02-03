@@ -7,7 +7,7 @@ import org.bson.Document;
 
 public final class PersistenceManager {
 
-    public static MongoCollection<Document> collection(String name) {
+    public static MongoCollection<Document> getDocumentCollection(final String name) {
         return DATABASE.getCollection(name);
     }
 

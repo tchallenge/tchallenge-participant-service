@@ -5,12 +5,14 @@ import org.bson.Document;
 import ru.tchallenge.participant.service.domain.assignment.Assignment;
 import ru.tchallenge.participant.service.domain.assignment.AssignmentProjector;
 import ru.tchallenge.participant.service.domain.problem.ProblemRepository;
+import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class WorkbookProjector {
+public final class WorkbookProjector extends GenericProjector {
 
     public static final WorkbookProjector INSTANCE = new WorkbookProjector();
 
@@ -25,7 +27,7 @@ public final class WorkbookProjector {
         final String status = document.getString("status");
         final boolean classified = classifiedByStatus(status);
         return Workbook.builder()
-                .id(document.getObjectId("_id").toHexString())
+                .id(DocumentWrapper.fromDocument(document).getId())
                 .eventId(document.getObjectId("eventId").toHexString())
                 .ownerId(document.getObjectId("ownerId").toHexString())
                 .assignments(ImmutableList.copyOf(assignments(document, classified)))

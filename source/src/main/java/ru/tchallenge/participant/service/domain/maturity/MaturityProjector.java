@@ -1,10 +1,11 @@
 package ru.tchallenge.participant.service.domain.maturity;
 
 import org.bson.Document;
+import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
 
-public final class MaturityMapper {
+public final class MaturityProjector extends GenericProjector {
 
-    public static final MaturityMapper INSTANCE = new MaturityMapper();
+    public static final MaturityProjector INSTANCE = new MaturityProjector();
 
     public Maturity intoMaturity(final Document document) {
         return Maturity.builder()
@@ -13,7 +14,7 @@ public final class MaturityMapper {
                 .build();
     }
 
-    private MaturityMapper() {
+    private MaturityProjector() {
 
     }
 }

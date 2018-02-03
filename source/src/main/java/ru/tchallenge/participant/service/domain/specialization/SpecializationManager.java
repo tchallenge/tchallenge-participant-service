@@ -11,11 +11,11 @@ public final class SpecializationManager {
     public List<Specialization> retrieveByTextcodes(final String... textcodes) {
         return specializationRepository
                 .findByTextcodes(textcodes)
-                .map(specializationMapper::intoSpecialization)
+                .map(specializationProjector::intoSpecialization)
                 .into(Lists.newArrayList());
     }
 
-    private final SpecializationMapper specializationMapper = SpecializationMapper.INSTANCE;
+    private final SpecializationProjector specializationProjector = SpecializationProjector.INSTANCE;
     private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
 
     private SpecializationManager() {

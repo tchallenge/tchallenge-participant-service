@@ -2,6 +2,7 @@ package ru.tchallenge.participant.service.domain.account;
 
 import org.bson.Document;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
+import ru.tchallenge.participant.service.utility.persistence.ObjectIdWrapper;
 
 public final class AccountManager {
 
@@ -10,7 +11,7 @@ public final class AccountManager {
     public Account retrieveCurrent() {
         final String id = AuthenticationContext.getAuthentication().getAccountId();
         final Document accountDocument = accountRepository.findById(id);
-        return accountMapper.intoAccount(accountDocument);
+        return accountProjector.intoAccount(accountDocument);
     }
 
     public void updateCurrentPassword(final AccountPasswordUpdateInvoice invoice) {
@@ -22,7 +23,7 @@ public final class AccountManager {
             throw new RuntimeException("Current password does not match");
         }
         accountDocument.put("passwordHash", accountPasswordHashEngine.hash(invoice.getDesired()));
-        accountRepository.update(accountDocument);
+        accountRepository.update(ObjectIdWrapper.fromDocument(accountDocument).getObjectId(), accountDocument);
     }
 
     public void updateCurrentPersonality(final AccountPersonality invoice) {
@@ -30,7 +31,7 @@ public final class AccountManager {
         final Document accountDocument = accountRepository.findById(id);
         final Document accountPersonalityDocument = accountSystemManager.createAccountPersonalityDocument(invoice);
         accountDocument.put("personality", accountPersonalityDocument);
-        accountRepository.update(accountDocument);
+        accountRepository.update(ObjectIdWrapper.fromDocument(accountDocument).getObjectId(), accountDocument);
     }
 
     public void updateCurrentStatus(final AccountStatusUpdateInvoice invoice) {
@@ -40,12 +41,12 @@ public final class AccountManager {
             throw new RuntimeException("Status is not permitted");
         }
         accountDocument.put("status", invoice.getNewStatus());
-        accountRepository.update(accountDocument);
+        accountRepository.update(ObjectIdWrapper.fromDocument(accountDocument).getObjectId(), accountDocument);
     }
 
     private final AccountPasswordHashEngine accountPasswordHashEngine = AccountPasswordHashEngine.INSTANCE;
     private final AccountPasswordValidator accountPasswordValidator = AccountPasswordValidator.INSTANCE;
-    private final AccountMapper accountMapper = AccountMapper.INSTANCE;
+    private final AccountProjector accountProjector = AccountProjector.INSTANCE;
     private final AccountRepository accountRepository = AccountRepository.INSTANCE;
     private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
 

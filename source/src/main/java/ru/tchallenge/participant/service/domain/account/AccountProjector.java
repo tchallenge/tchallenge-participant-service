@@ -1,16 +1,16 @@
 package ru.tchallenge.participant.service.domain.account;
 
 import org.bson.Document;
+import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
 
-import java.time.ZoneOffset;
+public final class AccountProjector extends GenericProjector {
 
-public final class AccountMapper {
-
-    public static final AccountMapper INSTANCE = new AccountMapper();
+    public static final AccountProjector INSTANCE = new AccountProjector();
 
     public Account intoAccount(final Document document) {
         return Account.builder()
-                .id(document.getObjectId("_id").toHexString())
+                .id(DocumentWrapper.fromDocument(document).getId())
                 .status(document.getString("status"))
                 .email(document.getString("email"))
                 .personality(intoAccountPersonality((Document) document.get("personality")))
@@ -20,7 +20,7 @@ public final class AccountMapper {
 
     public Account intoAccountShort(final Document document) {
         return Account.builder()
-                .id(document.getObjectId("_id").toHexString())
+                .id(DocumentWrapper.fromDocument(document).getId())
                 .status(document.getString("status"))
                 .email(document.getString("email"))
                 .build();
@@ -44,7 +44,7 @@ public final class AccountMapper {
                 .build();
     }
 
-    private AccountMapper() {
+    private AccountProjector() {
 
     }
 }

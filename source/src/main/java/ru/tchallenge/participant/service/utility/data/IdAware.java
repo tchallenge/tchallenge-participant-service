@@ -4,7 +4,7 @@ public interface IdAware {
 
     String getId();
 
-    default IdContainer justId() {
+    default IdAware justId() {
         return IdContainer.builder()
                 .id(getId())
                 .build();
