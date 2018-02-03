@@ -12,14 +12,14 @@ public final class ProblemManager {
     public ProblemRandomResult retrieveRandomResult(final ProblemRandomInvoice invoice) {
         final List<Problem> random = problemRepository
                 .findRandom(invoice)
-                .map(problemMapper::intoProblemRandomResultItem)
+                .map(problemProjector::intoProblemRandomResultItem)
                 .into(Lists.newArrayList());
         return ProblemRandomResult.builder()
                 .items(ImmutableList.copyOf(random))
                 .build();
     }
 
-    private final ProblemMapper problemMapper = ProblemMapper.INSTANCE;
+    private final ProblemProjector problemProjector = ProblemProjector.INSTANCE;
     private final ProblemRepository problemRepository = ProblemRepository.INSTANCE;
 
     private ProblemManager() {

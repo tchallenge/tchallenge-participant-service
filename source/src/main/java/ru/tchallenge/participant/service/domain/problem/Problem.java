@@ -18,5 +18,4 @@ public final class Problem {
     private final ImmutableList<ProblemImage> images;
     private final ImmutableList<ProblemSnippet> snippets;
     private final ImmutableList<ProblemOption> options;
-    private final String solution;
 }
