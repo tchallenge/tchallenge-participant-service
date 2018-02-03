@@ -1,18 +1,26 @@
 package ru.tchallenge.participant.service.domain.specialization;
 
-import com.google.common.collect.Lists;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class SpecializationManager {
 
     public static final SpecializationManager INSTANCE = new SpecializationManager();
 
-    public List<Specialization> retrieveByTextcodes(final String... textcodes) {
+    public List<Specialization> retrieveByAll() {
         return specializationRepository
-                .findByTextcodes(textcodes)
-                .map(specializationProjector::intoSpecialization)
-                .into(Lists.newArrayList());
+                .findAll()
+                .stream()
+                .map(specializationProjector::specialization)
+                .collect(Collectors.toList());
+    }
+
+    public List<Specialization> retrieveByPermalinks(final String... permalinks) {
+        return specializationRepository
+                .findByPermalinks(permalinks)
+                .stream()
+                .map(specializationProjector::specialization)
+                .collect(Collectors.toList());
     }
 
     private final SpecializationProjector specializationProjector = SpecializationProjector.INSTANCE;

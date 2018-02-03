@@ -1,8 +1,9 @@
 package ru.tchallenge.participant.service.domain.specialization;
 
-import com.mongodb.client.FindIterable;
-import org.bson.Document;
 import ru.tchallenge.participant.service.utility.data.GenericRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.mongodb.client.model.Filters.in;
 
@@ -14,9 +15,18 @@ public final class SpecializationRepository extends GenericRepository {
         super("specializations");
     }
 
-    public FindIterable<Document> findByTextcodes(final String... textcodes) {
+    public List<SpecializationDocument> findAll() {
         return documents()
                 .find()
-                .filter(in("textcode", textcodes));
+                .map(SpecializationDocument::new)
+                .into(new ArrayList<>());
+    }
+
+    public List<SpecializationDocument> findByPermalinks(final String... permalinks) {
+        return documents()
+                .find()
+                .filter(in("permalink", permalinks))
+                .map(SpecializationDocument::new)
+                .into(new ArrayList<>());
     }
 }

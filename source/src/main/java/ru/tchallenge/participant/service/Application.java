@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.tchallenge.participant.service.domain.account.AccountRouter;
+import ru.tchallenge.participant.service.domain.specialization.SpecializationRouter;
 import ru.tchallenge.participant.service.domain.workbook.WorkbookRouter;
 import ru.tchallenge.participant.service.domain.event.EventRouter;
 import ru.tchallenge.participant.service.security.SecurityRouter;
@@ -55,6 +56,8 @@ public class Application implements Runnable {
         path("/events", EventRouter.INSTANCE);
 
         path("/", WorkbookRouter.INSTANCE);
+
+        path("/", SpecializationRouter.INSTANCE);
 
         exception(Exception.class, (e, request, response) -> {
             response.status(400);
