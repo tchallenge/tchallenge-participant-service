@@ -1,15 +1,12 @@
 package ru.tchallenge.participant.service.domain.workbook;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import ru.tchallenge.participant.service.domain.maturity.Maturity;
-import ru.tchallenge.participant.service.domain.problem.ProblemRandomInvoice;
 import ru.tchallenge.participant.service.domain.problem.ProblemRepository;
 import ru.tchallenge.participant.service.domain.workbook.assignment.AssignmentUpdateInvoice;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
 import ru.tchallenge.participant.service.utility.data.IdAware;
-import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
-import ru.tchallenge.participant.service.utility.persistence.ObjectIdWrapper;
+import ru.tchallenge.participant.service.utility.data.Id;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,15 +25,15 @@ public final class WorkbookManager {
 
     public IdAware create(final WorkbookInvoice invoice) {
         final WorkbookDocument workbookDocument = prepareNewWorkbook(invoice);
-        workbookRepository.insert(workbookDocument.getDocument());
+        workbookRepository.insert(workbookDocument);
         return workbookDocument.justId();
     }
 
     private WorkbookDocument prepareNewWorkbook(final WorkbookInvoice invoice) {
         final String accountId = AuthenticationContext.getAuthentication().getAccountId();
-        final ObjectId ownerId = ObjectIdWrapper.fromHex(accountId).getObjectId();
-        final ObjectId eventId = ObjectIdWrapper.fromHex(invoice.getEventId()).getObjectId();
-        final ObjectId specializationId = ObjectIdWrapper.fromHex(invoice.getSpecializationId()).getObjectId();
+        final Id ownerId = new Id(accountId);
+        final Id eventId = invoice.getEventId();
+        final Id specializationId = invoice.getSpecializationId();
         final Maturity maturity = invoice.getMaturity();
         return new WorkbookDocument()
                 .ownerId(ownerId)

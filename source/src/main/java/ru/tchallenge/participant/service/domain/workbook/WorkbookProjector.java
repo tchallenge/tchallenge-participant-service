@@ -5,8 +5,8 @@ import org.bson.Document;
 import ru.tchallenge.participant.service.domain.workbook.assignment.Assignment;
 import ru.tchallenge.participant.service.domain.workbook.assignment.AssignmentProjector;
 import ru.tchallenge.participant.service.domain.problem.ProblemRepository;
-import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
-import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
+import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.data.GenericProjector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +23,17 @@ public final class WorkbookProjector extends GenericProjector {
 
     }
 
-    public Workbook workbook(final Document document) {
-        final WorkbookStatus status = WorkbookStatus.valueOf(document.getString("status"));
+    public Workbook workbook(final WorkbookDocument workbookDocument) {
+        final WorkbookStatus status = workbookDocument.getStatus();
         final boolean classified = classifiedByStatus(status);
         return Workbook.builder()
-                .id(DocumentWrapper.fromDocument(document).getId())
-                .eventId(document.getObjectId("eventId").toHexString())
-                .ownerId(document.getObjectId("ownerId").toHexString())
-                .assignments(ImmutableList.copyOf(assignments(document, classified)))
-                .submittableUntil(document.getDate("submittableUntil").toInstant())
+                .id(workbookDocument.getId())
+                .eventId(workbookDocument.getEventId())
+                .specializationId(workbookDocument.getSpecializationId())
+                .ownerId(workbookDocument.getOwnerId())
+                .maturity(workbookDocument.getMaturity())
+               // .assignments(ImmutableList.copyOf(assignments(document, classified)))
+                .submittableUntil(workbookDocument.getSubmittableUntil())
                 .status(status)
                 .build();
     }

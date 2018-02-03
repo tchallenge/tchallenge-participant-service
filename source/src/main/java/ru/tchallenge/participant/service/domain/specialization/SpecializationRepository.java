@@ -2,7 +2,7 @@ package ru.tchallenge.participant.service.domain.specialization;
 
 import com.mongodb.client.FindIterable;
 import org.bson.Document;
-import ru.tchallenge.participant.service.utility.persistence.GenericRepository;
+import ru.tchallenge.participant.service.utility.data.GenericRepository;
 
 import static com.mongodb.client.model.Filters.in;
 

@@ -2,7 +2,7 @@ package ru.tchallenge.participant.service.utility.data;
 
 public interface IdAware {
 
-    String getId();
+    Id getId();
 
     default IdAware justId() {
         return IdContainer.builder()

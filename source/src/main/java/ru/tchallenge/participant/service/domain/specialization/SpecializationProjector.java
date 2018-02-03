@@ -1,7 +1,7 @@
 package ru.tchallenge.participant.service.domain.specialization;
 
 import org.bson.Document;
-import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
+import ru.tchallenge.participant.service.utility.data.GenericProjector;
 
 public final class SpecializationProjector extends GenericProjector {
 

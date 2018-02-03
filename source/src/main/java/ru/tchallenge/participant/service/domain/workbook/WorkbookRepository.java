@@ -1,6 +1,6 @@
 package ru.tchallenge.participant.service.domain.workbook;
 
-import ru.tchallenge.participant.service.utility.persistence.GenericRepository;
+import ru.tchallenge.participant.service.utility.data.GenericRepository;
 
 public final class WorkbookRepository extends GenericRepository {
 

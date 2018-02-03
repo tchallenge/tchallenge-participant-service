@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public final class IdContainer implements IdAware {
 
-    private final String id;
+    private final Id id;
 }

@@ -52,7 +52,7 @@ public final class AuthenticationFacade {
             throw new RuntimeException("Account is illegal for authentication");
         }
         return Authentication.builder()
-                .accountId(account.getId())
+                .accountId(account.getId().toHex())
                 .accountEmail(account.getEmail())
                 .method("password")
                 .build();
@@ -73,7 +73,7 @@ public final class AuthenticationFacade {
             return null;
         }
         return Authentication.builder()
-                .accountId(account.getId())
+                .accountId(account.getId().toHex())
                 .accountEmail(account.getEmail())
                 .tokenPayload(token.getPayload())
                 .method("token")
@@ -94,7 +94,7 @@ public final class AuthenticationFacade {
             ACCOUNT_SYSTEM_MANAGER.updatePassword(account.getId(), invoice.getPasswordUpdate());
         }
         return Authentication.builder()
-                .accountId(account.getId())
+                .accountId(account.getId().toHex())
                 .accountEmail(account.getEmail())
                 .method("voucher")
                 .voucherPayload(voucher.getPayload())

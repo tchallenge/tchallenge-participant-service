@@ -2,6 +2,7 @@ package ru.tchallenge.participant.service.domain.account;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.tchallenge.participant.service.utility.data.Id;
 import ru.tchallenge.participant.service.utility.data.IdAware;
 
 import java.time.Instant;
@@ -10,7 +11,7 @@ import java.time.Instant;
 @Builder
 public final class Account implements IdAware {
 
-    private final String id;
+    private final Id id;
     private final String email;
     private final String passwordHash;
     private final AccountPersonality personality;

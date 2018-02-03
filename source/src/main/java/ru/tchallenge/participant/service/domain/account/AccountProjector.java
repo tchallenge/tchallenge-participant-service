@@ -1,8 +1,8 @@
 package ru.tchallenge.participant.service.domain.account;
 
 import org.bson.Document;
-import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
-import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
+import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.data.GenericProjector;
 
 public final class AccountProjector extends GenericProjector {
 
@@ -10,7 +10,7 @@ public final class AccountProjector extends GenericProjector {
 
     public Account intoAccount(final Document document) {
         return Account.builder()
-                .id(DocumentWrapper.fromDocument(document).getId())
+                .id(new DocumentWrapper(document).getId())
                 .status(document.getString("status"))
                 .email(document.getString("email"))
                 .personality(intoAccountPersonality((Document) document.get("personality")))
@@ -20,7 +20,7 @@ public final class AccountProjector extends GenericProjector {
 
     public Account intoAccountShort(final Document document) {
         return Account.builder()
-                .id(DocumentWrapper.fromDocument(document).getId())
+                .id(new DocumentWrapper(document).getId())
                 .status(document.getString("status"))
                 .email(document.getString("email"))
                 .build();

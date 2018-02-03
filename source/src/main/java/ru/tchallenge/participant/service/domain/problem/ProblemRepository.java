@@ -5,7 +5,7 @@ import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import ru.tchallenge.participant.service.utility.persistence.GenericRepository;
+import ru.tchallenge.participant.service.utility.data.GenericRepository;
 
 public final class ProblemRepository extends GenericRepository {
 

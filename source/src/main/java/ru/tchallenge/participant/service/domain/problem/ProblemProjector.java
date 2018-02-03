@@ -1,8 +1,8 @@
 package ru.tchallenge.participant.service.domain.problem;
 
 import org.bson.Document;
-import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
-import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
+import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.data.GenericProjector;
 
 public final class ProblemProjector extends GenericProjector {
 
@@ -14,13 +14,13 @@ public final class ProblemProjector extends GenericProjector {
 
     public Problem intoProblem(final Document document, final boolean classified) {
         return Problem.builder()
-                .id(DocumentWrapper.fromDocument(document).getId())
+                .id(new DocumentWrapper(document).getId().toHex())
                 .build();
     }
 
     public Problem intoProblemRandomResultItem(final Document document) {
         return Problem.builder()
-                .id(DocumentWrapper.fromDocument(document).getId())
+                .id(new DocumentWrapper(document).getId().toHex())
                 .build();
     }
 }

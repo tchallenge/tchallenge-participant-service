@@ -1,8 +1,8 @@
 package ru.tchallenge.participant.service.domain.event;
 
 import org.bson.Document;
-import ru.tchallenge.participant.service.utility.persistence.DocumentWrapper;
-import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
+import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.data.GenericProjector;
 
 public final class EventProjector extends GenericProjector {
 
@@ -10,7 +10,7 @@ public final class EventProjector extends GenericProjector {
 
     public Event intoEvent(final Document document) {
         return Event.builder()
-                .id(DocumentWrapper.fromDocument(document).getId())
+                .id(new DocumentWrapper(document).getId())
                 .textcode(document.getString("textcode"))
                 .caption(document.getString("caption"))
                 .description(document.getString("description"))
@@ -23,7 +23,7 @@ public final class EventProjector extends GenericProjector {
 
     public Event intoEventShort(final Document document) {
         return Event.builder()
-                .id(DocumentWrapper.fromDocument(document).getId())
+                .id(new DocumentWrapper(document).getId())
                 .textcode(document.getString("textcode"))
                 .caption(document.getString("caption"))
                 .status(document.getString("status"))

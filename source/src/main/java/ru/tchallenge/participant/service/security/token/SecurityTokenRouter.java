@@ -14,7 +14,7 @@ public final class SecurityTokenRouter implements RouteGroup {
         post("/", (request, response) -> {
             final Authentication authentication = AuthenticationContext.getAuthentication();
             final SecurityToken token = TokenManager.create(authentication.getAccountId());
-            return json(token.justId(), response);
+            return json(token.getId(), response);
         });
         path("/current", () -> {
             get("", (request, response) -> {

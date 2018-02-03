@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.bson.Document;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
+import ru.tchallenge.participant.service.utility.data.Id;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public final class EventManager {
 
     public Event retrieveById(final String id) {
         authenticated();
-        final Document eventDocument = eventRepository.findById(id);
+        final Document eventDocument = eventRepository.findById(new Id(id)).getDocument();
         return eventProjector.intoEvent(eventDocument);
     }
 

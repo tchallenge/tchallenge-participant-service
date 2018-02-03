@@ -1,7 +1,7 @@
 package ru.tchallenge.participant.service.domain.account;
 
 import org.bson.Document;
-import ru.tchallenge.participant.service.utility.persistence.GenericRepository;
+import ru.tchallenge.participant.service.utility.data.GenericRepository;
 
 public final class AccountRepository extends GenericRepository {
 

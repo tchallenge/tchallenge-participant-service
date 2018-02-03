@@ -14,7 +14,7 @@ public final class SecurityVoucherRouter implements RouteGroup {
         post("/", (request, response) -> {
             final SecurityVoucherInvoice invoice = body(SecurityVoucherInvoice.class, request);
             final SecurityVoucher voucher = SecurityVoucherManager.create(invoice);
-            return json(voucher.justId(), response);
+            return json(voucher.getId(), response);
         });
     }
 }

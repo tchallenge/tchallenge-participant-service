@@ -2,7 +2,8 @@ package ru.tchallenge.participant.service.domain.account;
 
 import org.bson.Document;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
-import ru.tchallenge.participant.service.utility.persistence.ObjectIdWrapper;
+import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.data.Id;
 
 public final class AccountManager {
 
@@ -10,38 +11,38 @@ public final class AccountManager {
 
     public Account retrieveCurrent() {
         final String id = AuthenticationContext.getAuthentication().getAccountId();
-        final Document accountDocument = accountRepository.findById(id);
+        final Document accountDocument = accountRepository.findById(new Id(id)).getDocument();
         return accountProjector.intoAccount(accountDocument);
     }
 
     public void updateCurrentPassword(final AccountPasswordUpdateInvoice invoice) {
         final String id = AuthenticationContext.getAuthentication().getAccountId();
         accountPasswordValidator.validate(invoice.getDesired());
-        final Document accountDocument = accountRepository.findById(id);
+        final Document accountDocument = accountRepository.findById(new Id(id)).getDocument();
         final String passwordHash = accountDocument.getString("passwordHash");
         if (!accountPasswordHashEngine.match(invoice.getCurrent(), passwordHash)) {
             throw new RuntimeException("Current password does not match");
         }
         accountDocument.put("passwordHash", accountPasswordHashEngine.hash(invoice.getDesired()));
-        accountRepository.update(ObjectIdWrapper.fromDocument(accountDocument).getObjectId(), accountDocument);
+        accountRepository.replace(new DocumentWrapper(accountDocument));
     }
 
     public void updateCurrentPersonality(final AccountPersonality invoice) {
         final String id = AuthenticationContext.getAuthentication().getAccountId();
-        final Document accountDocument = accountRepository.findById(id);
+        final Document accountDocument = accountRepository.findById(new Id(id)).getDocument();
         final Document accountPersonalityDocument = accountSystemManager.createAccountPersonalityDocument(invoice);
         accountDocument.put("personality", accountPersonalityDocument);
-        accountRepository.update(ObjectIdWrapper.fromDocument(accountDocument).getObjectId(), accountDocument);
+        accountRepository.replace(new DocumentWrapper(accountDocument));
     }
 
     public void updateCurrentStatus(final AccountStatusUpdateInvoice invoice) {
         final String id = AuthenticationContext.getAuthentication().getAccountId();
-        final Document accountDocument = accountRepository.findById(id);
+        final Document accountDocument = accountRepository.findById(new Id(id)).getDocument();
         if (!invoice.getNewStatus().equals("DELETED")) {
             throw new RuntimeException("Status is not permitted");
         }
         accountDocument.put("status", invoice.getNewStatus());
-        accountRepository.update(ObjectIdWrapper.fromDocument(accountDocument).getObjectId(), accountDocument);
+        accountRepository.replace(new DocumentWrapper(accountDocument));
     }
 
     private final AccountPasswordHashEngine accountPasswordHashEngine = AccountPasswordHashEngine.INSTANCE;

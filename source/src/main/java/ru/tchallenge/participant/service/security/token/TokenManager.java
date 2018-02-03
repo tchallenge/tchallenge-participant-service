@@ -20,7 +20,7 @@ public final class TokenManager {
     public static SecurityToken retrieveByPayload(final String payload) {
         if (payload.equals("PREDEFINED")) {
             final Account account = ACCOUNT_SYSTEM_MANAGER.findByEmail("test.user1@example.com");
-            return createNewToken(account.getId());
+            return createNewToken(account.getId().toHex());
         }
         final SecurityToken token = TOKENS.get(payload);
         if (token == null || token.isExpired()) {

@@ -2,7 +2,7 @@ package ru.tchallenge.participant.service.domain.workbook.assignment;
 
 import org.bson.Document;
 import ru.tchallenge.participant.service.domain.problem.ProblemProjector;
-import ru.tchallenge.participant.service.utility.persistence.GenericProjector;
+import ru.tchallenge.participant.service.utility.data.GenericProjector;
 
 public final class AssignmentProjector extends GenericProjector {
 

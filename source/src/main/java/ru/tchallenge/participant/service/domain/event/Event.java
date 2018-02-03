@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import ru.tchallenge.participant.service.domain.maturity.Maturity;
 import ru.tchallenge.participant.service.domain.specialization.Specialization;
+import ru.tchallenge.participant.service.utility.data.Id;
 import ru.tchallenge.participant.service.utility.data.IdAware;
 
 import java.time.Instant;
@@ -13,7 +14,7 @@ import java.util.Collection;
 @Builder
 public final class Event implements IdAware {
 
-    private final String id;
+    private final Id id;
     private final String textcode;
     private final String caption;
     private final String description;

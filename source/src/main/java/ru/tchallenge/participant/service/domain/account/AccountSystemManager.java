@@ -1,8 +1,9 @@
 package ru.tchallenge.participant.service.domain.account;
 
 import org.bson.Document;
+import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
 import ru.tchallenge.participant.service.utility.data.IdAware;
-import ru.tchallenge.participant.service.utility.persistence.ObjectIdWrapper;
+import ru.tchallenge.participant.service.utility.data.Id;
 
 public final class AccountSystemManager {
 
@@ -19,16 +20,16 @@ public final class AccountSystemManager {
         document.put("status", "APPROVED");
         final Document personalityDocument = createAccountPersonalityDocument(invoice.getPersonality());
         document.put("personality", personalityDocument);
-        accountRepository.insert(document);
-        return accountProjector.justId(document);
+        accountRepository.insert(new DocumentWrapper(document));
+        return new DocumentWrapper(document).justId();
     }
 
-    public void updatePassword(final String id, final String password) {
+    public void updatePassword(final Id id, final String password) {
         accountPasswordValidator.validate(password);
-        final Document accountDocument = accountRepository.findById(id);
+        final Document accountDocument = accountRepository.findById(id).getDocument();
         final String passwordHash = accountPasswordHashEngine.hash(password);
         accountDocument.put("passwordHash", passwordHash);
-        accountRepository.update(ObjectIdWrapper.fromDocument(accountDocument).getObjectId(), accountDocument);
+        accountRepository.replace(new DocumentWrapper(accountDocument));
     }
 
     public Account findByEmail(final String email) {
@@ -40,7 +41,7 @@ public final class AccountSystemManager {
     }
 
     public Account findById(final String id) {
-        final Document document = accountRepository.findById(id);
+        final Document document = accountRepository.findById(new Id(id)).getDocument();
         if (document == null) {
             return null;
         }

@@ -13,7 +13,7 @@ public final class SecurityRegistrationRouter implements RouteGroup {
         post("/", (request, response) -> {
             final SecurityRegistrationInvoice invoice = body(SecurityRegistrationInvoice.class, request);
             final SecurityRegistration registration = SecurityRegistrationManager.create(invoice);
-            return json(registration.justId(), response);
+            return json(registration.getId(), response);
         });
     }
 }
