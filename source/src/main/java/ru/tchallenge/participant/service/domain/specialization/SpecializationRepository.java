@@ -1,11 +1,11 @@
 package ru.tchallenge.participant.service.domain.specialization;
 
-import ru.tchallenge.participant.service.utility.data.GenericRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.in;
+
+import ru.tchallenge.participant.service.utility.data.GenericRepository;
 
 public final class SpecializationRepository extends GenericRepository {
 
@@ -22,7 +22,7 @@ public final class SpecializationRepository extends GenericRepository {
                 .into(new ArrayList<>());
     }
 
-    public List<SpecializationDocument> findByPermalinks(final String... permalinks) {
+    public List<SpecializationDocument> findByPermalinks(final List<String> permalinks) {
         return documents()
                 .find()
                 .filter(in("permalink", permalinks))

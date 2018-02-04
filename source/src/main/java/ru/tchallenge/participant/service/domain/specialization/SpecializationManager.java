@@ -7,6 +7,9 @@ public final class SpecializationManager {
 
     public static final SpecializationManager INSTANCE = new SpecializationManager();
 
+    private final SpecializationProjector specializationProjector = SpecializationProjector.INSTANCE;
+    private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
+
     public List<Specialization> retrieveByAll() {
         return specializationRepository
                 .findAll()
@@ -14,17 +17,6 @@ public final class SpecializationManager {
                 .map(specializationProjector::specialization)
                 .collect(Collectors.toList());
     }
-
-    public List<Specialization> retrieveByPermalinks(final String... permalinks) {
-        return specializationRepository
-                .findByPermalinks(permalinks)
-                .stream()
-                .map(specializationProjector::specialization)
-                .collect(Collectors.toList());
-    }
-
-    private final SpecializationProjector specializationProjector = SpecializationProjector.INSTANCE;
-    private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
 
     private SpecializationManager() {
 

@@ -1,11 +1,12 @@
 package ru.tchallenge.participant.service.domain.specialization;
 
-import org.bson.Document;
-import ru.tchallenge.participant.service.domain.problem.ProblemCategory;
-import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.bson.Document;
+
+import ru.tchallenge.participant.service.domain.problem.ProblemCategory;
+import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
 
 public final class SpecializationDocument extends DocumentWrapper {
 
@@ -18,11 +19,11 @@ public final class SpecializationDocument extends DocumentWrapper {
     }
 
     public String getCaption() {
-        return document.getString(ATTRIBUTE_CAPTION);
+        return retrieveString(ATTRIBUTE_CAPTION);
     }
 
     public String getPermalink() {
-        return document.getString(ATTRIBUTE_PERMALINK);
+        return retrieveString(ATTRIBUTE_PERMALINK);
     }
 
     public List<ProblemCategory> getTaskCategories() {

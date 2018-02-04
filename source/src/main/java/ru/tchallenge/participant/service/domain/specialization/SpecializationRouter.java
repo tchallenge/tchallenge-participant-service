@@ -2,8 +2,9 @@ package ru.tchallenge.participant.service.domain.specialization;
 
 import spark.RouteGroup;
 
-import static ru.tchallenge.participant.service.utility.serialization.Json.*;
-import static spark.Spark.*;
+import static ru.tchallenge.participant.service.utility.serialization.Json.json;
+import static spark.Spark.get;
+import static spark.Spark.path;
 
 public final class SpecializationRouter implements RouteGroup {
 
@@ -18,9 +19,7 @@ public final class SpecializationRouter implements RouteGroup {
     @Override
     public void addRoutes() {
         path("/specializations", () -> {
-            get("/", (request, response) -> {
-                return json(specializationManager.retrieveByAll(), response);
-            });
+            get("/", (request, response) -> json(specializationManager.retrieveByAll(), response));
         });
     }
 }

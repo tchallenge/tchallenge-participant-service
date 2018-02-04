@@ -1,8 +1,10 @@
 package ru.tchallenge.participant.service.domain.specialization;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
+
 import ru.tchallenge.participant.service.domain.problem.ProblemCategory;
 import ru.tchallenge.participant.service.utility.data.Id;
 
@@ -13,5 +15,5 @@ public final class Specialization {
     private final Id id;
     private final String caption;
     private final String permalink;
-    private final ImmutableList<ProblemCategory> problemCategories;
+    private final List<ProblemCategory> problemCategories;
 }
