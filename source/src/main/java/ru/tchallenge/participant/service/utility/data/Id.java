@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.google.common.base.Objects;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -68,5 +69,22 @@ public final class Id {
 
     public ObjectId toObjectId() {
         return objectId;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        final Id another = (Id) object;
+        return Objects.equal(objectId, another.objectId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(objectId);
     }
 }

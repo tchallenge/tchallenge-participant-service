@@ -16,9 +16,17 @@ public final class ProblemManager {
 
     public List<Problem> retrieveAll() {
         return problemRepository
-                .findRandom(null)
+                .findAll()
                 .stream()
-                .map(d -> problemProjector.problem(d, true))
+                .map(d -> problemProjector.problem(d, false))
+                .collect(Collectors.toList());
+    }
+
+    public List<Problem> retrieveRandom(final ProblemRandomInvoice invoice) {
+        return problemRepository
+                .findRandom(invoice)
+                .stream()
+                .map(d -> problemProjector.problem(d, false))
                 .collect(Collectors.toList());
     }
 }

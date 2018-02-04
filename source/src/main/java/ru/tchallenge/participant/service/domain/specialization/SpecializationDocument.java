@@ -31,9 +31,4 @@ public final class SpecializationDocument extends DocumentWrapper {
                 .map(ProblemCategory::valueOf)
                 .collect(Collectors.toList());
     }
-
-    @SuppressWarnings("unchecked")
-    private List<String> retrieveListOfStrings(final String attribute) {
-        return (List<String>) document.get(attribute);
-    }
 }

@@ -1,8 +1,13 @@
 package ru.tchallenge.participant.service.domain.problem;
 
-import com.google.common.collect.ImmutableList;
 import lombok.Builder;
 import lombok.Data;
+
+import com.google.common.collect.ImmutableList;
+
+import ru.tchallenge.participant.service.domain.problem.image.ProblemImage;
+import ru.tchallenge.participant.service.domain.problem.option.ProblemOption;
+import ru.tchallenge.participant.service.domain.problem.snippet.ProblemSnippet;
 import ru.tchallenge.participant.service.utility.data.Id;
 import ru.tchallenge.participant.service.utility.data.IdAware;
 
@@ -15,9 +20,10 @@ public final class Problem implements IdAware {
     private final Integer complexity;
     private final ProblemDifficulty difficulty;
     private final ProblemExpectation expectation;
-    private final String introduction;
-    private final String question;
     private final ImmutableList<ProblemImage> images;
-    private final ImmutableList<ProblemSnippet> snippets;
+    private final String introduction;
     private final ImmutableList<ProblemOption> options;
+    private final String question;
+    private final ImmutableList<ProblemSnippet> snippets;
+    private final ProblemStatus status;
 }

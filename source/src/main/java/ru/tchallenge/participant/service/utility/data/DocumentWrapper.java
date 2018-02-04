@@ -1,11 +1,16 @@
 package ru.tchallenge.participant.service.utility.data;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-
-import java.time.Instant;
-import java.util.Date;
 
 public class DocumentWrapper implements IdAware {
 
@@ -39,15 +44,15 @@ public class DocumentWrapper implements IdAware {
 
     @Override
     public Id getId() {
-        return retrieveId(document);
+        return retrieveId(ATTRIBUTE_ID);
     }
 
     public Instant getCreatedAt() {
-        return document.getDate(ATTRIBUTE_CREATED_AT).toInstant();
+        return retrieveInstant(ATTRIBUTE_CREATED_AT);
     }
 
     public Instant getLastModifiedAt() {
-        return document.getDate(ATTRIBUTE_LAST_MODIFIED_AT).toInstant();
+        return retrieveInstant(ATTRIBUTE_LAST_MODIFIED_AT);
     }
 
     public DocumentWrapper deleteFrom(final MongoCollection<Document> collection) {
@@ -73,13 +78,67 @@ public class DocumentWrapper implements IdAware {
         return this;
     }
 
-    private Document attachId(final Document document, final Id id) {
+    protected Boolean retrieveBoolean(final String attribute) {
+        return document.getBoolean(attribute);
+    }
+
+    protected Id retrieveId(final String attribute) {
+        return new Id(document.getObjectId(attribute));
+    }
+
+    protected Instant retrieveInstant(final String attribute) {
+        return document.getDate(attribute).toInstant();
+    }
+
+    protected Integer retrieveInteger(final String attribute) {
+        return document.getInteger(attribute);
+    }
+
+    protected <T> List<T> retrieveListOfDocuments(final String attribute, final Function<Document, T> mapper) {
+        final List<Document> list = cast(document.get(attribute));
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list
+                .stream()
+                .map(mapper)
+                .collect(Collectors.toList());
+    }
+
+    protected List<String> retrieveListOfStrings(final String attribute) {
+        return cast(document.get(attribute));
+    }
+
+    protected String retrieveString(final String attribute) {
+        return document.getString(attribute);
+    }
+
+    private static Document attachId(final Document document, final Id id) {
         document.put(ATTRIBUTE_ID, id.toObjectId());
         return document;
     }
 
-    private Id retrieveId(final Document document) {
+    protected static Set<String> setOfStrings(final Set<? extends Enum> enums) {
+        return enums
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+    }
+
+    protected static List<String> listOfStrings(final List<? extends Enum> enums) {
+        return enums
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
+
+    private static Id retrieveId(final Document document) {
         final ObjectId objectId = document.getObjectId(ATTRIBUTE_ID);
         return objectId != null ? new Id(objectId) : null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T cast(final Object object) {
+        return (T) object;
     }
 }

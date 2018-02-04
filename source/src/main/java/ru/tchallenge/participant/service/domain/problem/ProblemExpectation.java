@@ -2,11 +2,15 @@ package ru.tchallenge.participant.service.domain.problem;
 
 public enum ProblemExpectation {
 
-    SINGLESELECT,
+    SINGLE,
 
-    MULTISELECT,
+    MULTIPLE,
 
-    SMALLINPUT,
+    NUMBER,
 
-    LARGEINPUT
+    STRING,
+
+    TEXT,
+
+    CODE
 }

@@ -1,4 +1,4 @@
-package ru.tchallenge.participant.service.domain.problem;
+package ru.tchallenge.participant.service.domain.problem.snippet;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public final class ProblemSnippet {
 
-    private final String textcode;
     private final String content;
-    private final String format;
+    private final ProblemSnippetStyle style;
 }

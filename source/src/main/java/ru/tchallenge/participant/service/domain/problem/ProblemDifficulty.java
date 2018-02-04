@@ -4,7 +4,7 @@ public enum ProblemDifficulty {
 
     EASY,
 
-    MEDIUM,
+    MODERATE,
 
     HARD,
 

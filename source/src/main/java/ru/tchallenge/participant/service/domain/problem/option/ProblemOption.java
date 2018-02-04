@@ -1,4 +1,4 @@
-package ru.tchallenge.participant.service.domain.problem;
+package ru.tchallenge.participant.service.domain.problem.option;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public final class ProblemOption {
 
-    private final String textcode;
-    private final Integer content;
+    private final String content;
     private final Boolean correct;
 }
