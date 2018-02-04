@@ -7,6 +7,9 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import ru.tchallenge.participant.service.utility.data.GenericRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ProblemRepository extends GenericRepository {
 
     public static final ProblemRepository INSTANCE = new ProblemRepository();
@@ -15,9 +18,12 @@ public final class ProblemRepository extends GenericRepository {
         super("problems");
     }
 
-    public AggregateIterable<Document> findRandom(final ProblemRandomInvoice invoice) {
+    public List<ProblemDocument> findRandom(final ProblemRandomInvoice invoice) {
+        /*
         final Bson match = Aggregates.match(new Document().append("categories", invoice.getCategories()).append("difficulty", "HARD"));
         final Bson sample = Aggregates.sample(invoice.getLimit());
         return documents().aggregate(Lists.newArrayList(match, sample));
+        */
+        return documents().find().map(ProblemDocument::new).into(new ArrayList<>());
     }
 }

@@ -1,28 +1,24 @@
 package ru.tchallenge.participant.service.domain.problem;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ProblemManager {
 
     public static final ProblemManager INSTANCE = new ProblemManager();
-
-    public ProblemRandomResult retrieveRandomResult(final ProblemRandomInvoice invoice) {
-        final List<Problem> random = problemRepository
-                .findRandom(invoice)
-                .map(problemProjector::intoProblemRandomResultItem)
-                .into(Lists.newArrayList());
-        return ProblemRandomResult.builder()
-                .items(ImmutableList.copyOf(random))
-                .build();
-    }
 
     private final ProblemProjector problemProjector = ProblemProjector.INSTANCE;
     private final ProblemRepository problemRepository = ProblemRepository.INSTANCE;
 
     private ProblemManager() {
 
+    }
+
+    public List<Problem> retrieveAll() {
+        return problemRepository
+                .findRandom(null)
+                .stream()
+                .map(d -> problemProjector.problem(d, true))
+                .collect(Collectors.toList());
     }
 }

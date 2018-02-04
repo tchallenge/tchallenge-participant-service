@@ -9,7 +9,7 @@ import java.util.Set;
 @Builder
 public final class ProblemRandomInvoice {
 
-    private Set<String> categories;
-    private Set<String> difficulties;
+    private Set<ProblemCategory> categories;
+    private Set<ProblemDifficulty> difficulties;
     private Integer limit;
 }
