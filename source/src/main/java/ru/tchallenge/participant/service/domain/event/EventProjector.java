@@ -1,36 +1,36 @@
 package ru.tchallenge.participant.service.domain.event;
 
-import org.bson.Document;
-import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
 import ru.tchallenge.participant.service.utility.data.GenericProjector;
 
 public final class EventProjector extends GenericProjector {
 
     public static final EventProjector INSTANCE = new EventProjector();
 
-    public Event intoEvent(final Document document) {
-        return Event.builder()
-                .id(new DocumentWrapper(document).getId())
-                .textcode(document.getString("textcode"))
-                .caption(document.getString("caption"))
-                .description(document.getString("description"))
-                .greeting(document.getString("greeting"))
-                .validFrom(document.getDate("validFrom").toInstant())
-                .validUntil(document.getDate("validUntil").toInstant())
-                .status(document.getString("status"))
-                .build();
-    }
-
-    public Event intoEventShort(final Document document) {
-        return Event.builder()
-                .id(new DocumentWrapper(document).getId())
-                .textcode(document.getString("textcode"))
-                .caption(document.getString("caption"))
-                .status(document.getString("status"))
-                .build();
-    }
-
     private EventProjector() {
 
+    }
+
+    public Event event(final EventDocument document) {
+        return Event.builder()
+                .id(document.getId())
+                .caption(document.getCaption())
+                .description(document.getDescription())
+                .greeting(document.getGreeting())
+                .notifications(immutableList(document.getNotifications()))
+                .maturities(immutableList(document.getMaturities()))
+                .permalink(document.getCaption())
+                .specializationIds(immutableList(document.getSpecializationIds()))
+                .status(document.getStatus())
+                .validFrom(document.getValidFrom())
+                .validUntil(document.getValidUntil())
+                .build();
+    }
+
+    public Event eventShort(final EventDocument document) {
+        return Event.builder()
+                .id(document.getId())
+                .caption(document.getCaption())
+                .status(document.getStatus())
+                .build();
     }
 }

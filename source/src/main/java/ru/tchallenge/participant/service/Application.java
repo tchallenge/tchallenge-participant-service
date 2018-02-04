@@ -54,7 +54,7 @@ public class Application implements Runnable {
 
         path("/accounts", AccountRouter.INSTANCE);
 
-        path("/events", EventRouter.INSTANCE);
+        path("/", EventRouter.INSTANCE);
 
         path("/", WorkbookRouter.INSTANCE);
 

@@ -1,6 +1,7 @@
 package ru.tchallenge.participant.service.domain.event;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +9,6 @@ import lombok.Data;
 @Builder
 public final class EventSearchResult {
 
-    private final ImmutableList<Event> items;
+    private final List<Event> items;
     private final Integer total;
 }

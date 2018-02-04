@@ -105,8 +105,23 @@ public class DocumentWrapper implements IdAware {
                 .collect(Collectors.toList());
     }
 
+    protected List<Id> retrieveListOfIds(final String attribute) {
+        final List<ObjectId> list = cast(document.get(attribute));
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list
+                .stream()
+                .map(Id::new)
+                .collect(Collectors.toList());
+    }
+
     protected List<String> retrieveListOfStrings(final String attribute) {
-        return cast(document.get(attribute));
+        final List<String> list = cast(document.get(attribute));
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 
     protected String retrieveString(final String attribute) {
