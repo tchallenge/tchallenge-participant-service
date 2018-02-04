@@ -26,7 +26,7 @@ public final class SpecializationDocument extends DocumentWrapper {
         return retrieveString(ATTRIBUTE_PERMALINK);
     }
 
-    public List<ProblemCategory> getTaskCategories() {
+    public List<ProblemCategory> getProblemCategories() {
         return retrieveListOfStrings(ATTRIBUTE_PROBLEM_CATEGORIES)
                 .stream()
                 .map(ProblemCategory::valueOf)

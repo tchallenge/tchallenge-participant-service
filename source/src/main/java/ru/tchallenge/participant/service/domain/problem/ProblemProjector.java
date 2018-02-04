@@ -28,7 +28,6 @@ public final class ProblemProjector extends GenericProjector {
 
     public Problem problem(final ProblemDocument document, final boolean classified) {
         return Problem.builder()
-                .id(document.getId())
                 .complexity(0)
                 .categories(immutableList(document.getCategories()))
                 .complexity(document.getComplexity())
@@ -39,7 +38,6 @@ public final class ProblemProjector extends GenericProjector {
                 .options(immutableList(problemOptions(document.getOptions(), classified)))
                 .question(document.getQuestion())
                 .snippets(immutableList(problemSnippets(document.getSnippets())))
-                .status(document.getStatus())
                 .build();
     }
 

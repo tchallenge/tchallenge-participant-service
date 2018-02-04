@@ -1,10 +1,11 @@
 package ru.tchallenge.participant.service.domain.workbook;
 
+import java.util.Collection;
+
 import lombok.Builder;
 import lombok.Data;
-import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 
-import java.util.Collection;
+import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 
 @Data
 @Builder

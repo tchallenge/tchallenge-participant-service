@@ -12,8 +12,13 @@ import ru.tchallenge.participant.service.domain.problem.image.ProblemImageDocume
 import ru.tchallenge.participant.service.domain.problem.option.ProblemOptionDocument;
 import ru.tchallenge.participant.service.domain.problem.snippet.ProblemSnippetDocument;
 import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
+import ru.tchallenge.participant.service.utility.data.Id;
 
 public final class ProblemDocument extends DocumentWrapper {
+
+    public static Bson filterByIds(final List<Id> ids) {
+        return Filters.in(ATTRIBUTE_ID, ids.stream().map(Id::toObjectId).collect(Collectors.toList()));
+    }
 
     public static Bson randomFilter(final Set<ProblemCategory> categories, final ProblemDifficulty difficulty) {
         final Bson categoryFilter = Filters.in(ATTRIBUTE_CATEGORIES, setOfStrings(categories));

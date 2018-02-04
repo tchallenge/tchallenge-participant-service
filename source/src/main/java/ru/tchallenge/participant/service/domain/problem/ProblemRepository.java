@@ -31,6 +31,14 @@ public final class ProblemRepository extends GenericRepository {
                 .into(new ArrayList<>());
     }
 
+    public List<ProblemDocument> findByIds(final List<Id> ids) {
+        return documents()
+                .find()
+                .filter(ProblemDocument.filterByIds(ids))
+                .map(ProblemDocument::new)
+                .into(new ArrayList<>());
+    }
+
     public List<ProblemDocument> findRandom(final ProblemRandomInvoice invoice) {
         int iterations = 0;
         final List<Bson> pipeline = randomAggregationPipeline(invoice);

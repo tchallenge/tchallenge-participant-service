@@ -2,6 +2,7 @@ package ru.tchallenge.participant.service.domain.workbook.assignment;
 
 import lombok.Builder;
 import lombok.Data;
+
 import ru.tchallenge.participant.service.domain.problem.Problem;
 
 @Data

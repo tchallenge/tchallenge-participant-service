@@ -14,7 +14,7 @@ import org.bson.types.ObjectId;
 
 public class DocumentWrapper implements IdAware {
 
-    private static final String ATTRIBUTE_ID = "_id";
+    protected static final String ATTRIBUTE_ID = "_id";
     private static final String ATTRIBUTE_CREATED_AT = "createdAt";
     private static final String ATTRIBUTE_LAST_MODIFIED_AT = "lastModifiedAt";
 
