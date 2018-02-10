@@ -29,6 +29,7 @@ public final class EventProjector extends GenericProjector {
     public Event eventShort(final EventDocument document) {
         return Event.builder()
                 .id(document.getId())
+                .permalink(document.getPermalink())
                 .caption(document.getCaption())
                 .status(document.getStatus())
                 .build();
