@@ -82,7 +82,7 @@ public final class AuthenticationFacade {
 
     private static Authentication authenticateByVoucherPayload(final AuthenticationInvoice invoice) {
         final String payload = invoice.getVoucherPayload();
-        final SecurityVoucher voucher = SecurityVoucherManager.utilizeByPayload(payload);
+        final SecurityVoucher voucher = SECURITY_VOUCHER_MANAGER.utilizeByPayload(payload);
         if (voucher == null) {
             throw new RuntimeException("Security voucher is expired or does not exist");
         }
@@ -107,6 +107,7 @@ public final class AuthenticationFacade {
 
     private static final AccountSystemManager ACCOUNT_SYSTEM_MANAGER = AccountSystemManager.INSTANCE;
     private static final Set<String> ILLEGAL_STATUSES = Sets.newHashSet("SUSPENDED", "BANNED", "DELETED");
+    private static final SecurityVoucherManager SECURITY_VOUCHER_MANAGER = SecurityVoucherManager.INSTANCE;
 
     private AuthenticationFacade() {
 

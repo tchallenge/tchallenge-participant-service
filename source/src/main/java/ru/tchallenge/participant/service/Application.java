@@ -50,7 +50,7 @@ public class Application implements Runnable {
             return "1.0.0-SNAPSHOT";
         });
 
-        path("/security", new SecurityRouter());
+        path("/security", SecurityRouter.INSTANCE);
 
         path("/accounts", AccountRouter.INSTANCE);
 

@@ -1,17 +1,18 @@
 package ru.tchallenge.participant.service.security.voucher;
 
+import java.util.Collection;
+
 import lombok.Builder;
 import lombok.Data;
-import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 
-import java.util.Collection;
+import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 
 @Data
 @Builder
 public final class SecurityVoucherInvoice implements ValidationAware {
 
-    private String email;
-    private String backlink;
+    private final String email;
+    private final String backlink;
 
     @Override
     public void registerViolations(final Collection<String> violations) {
