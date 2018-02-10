@@ -11,8 +11,6 @@ import com.google.common.collect.Sets;
 
 import ru.tchallenge.participant.service.domain.maturity.Maturity;
 import ru.tchallenge.participant.service.domain.problem.*;
-import ru.tchallenge.participant.service.domain.problem.option.ProblemOption;
-import ru.tchallenge.participant.service.domain.problem.option.ProblemOptionDocument;
 import ru.tchallenge.participant.service.domain.specialization.SpecializationDocument;
 import ru.tchallenge.participant.service.domain.specialization.SpecializationRepository;
 import ru.tchallenge.participant.service.domain.workbook.assignment.AssignmentDocument;
@@ -26,6 +24,7 @@ public final class WorkbookManager {
 
     public static WorkbookManager INSTANCE = new WorkbookManager();
 
+    private final AuthenticationContext authenticationContext = AuthenticationContext.INSTANCE;
     private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
     private final ProblemRepository problemRepository = ProblemRepository.INSTANCE;
     private final WorkbookProjector workbookProjector = WorkbookProjector.INSTANCE;
@@ -115,7 +114,7 @@ public final class WorkbookManager {
     }
 
     private WorkbookDocument prepareNewWorkbook(final WorkbookInvoice invoice) {
-        final String accountId = AuthenticationContext.getAuthentication().getAccountId();
+        final String accountId = authenticatedAccountId();
         final Id ownerId = new Id(accountId);
         final Id eventId = invoice.getEventId();
         final Id specializationId = invoice.getSpecializationId();
@@ -208,5 +207,9 @@ public final class WorkbookManager {
             default:
                 return 5;
         }
+    }
+
+    private String authenticatedAccountId() {
+        return authenticationContext.getAuthentication().getAccountId();
     }
 }

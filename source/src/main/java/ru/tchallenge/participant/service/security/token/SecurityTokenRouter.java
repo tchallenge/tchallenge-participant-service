@@ -1,31 +1,36 @@
 package ru.tchallenge.participant.service.security.token;
 
-import ru.tchallenge.participant.service.security.authentication.Authentication;
-import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
 import spark.RouteGroup;
+import static spark.Spark.*;
 
 import static ru.tchallenge.participant.service.utility.serialization.Json.json;
-import static spark.Spark.*;
 
 public final class SecurityTokenRouter implements RouteGroup {
 
+    public static final SecurityTokenRouter INSTANCE = new SecurityTokenRouter();
+
+    private final TokenFacade tokenFacade = TokenFacade.INSTANCE;
+
+    private SecurityTokenRouter() {
+
+    }
+
     @Override
     public void addRoutes() {
-        post("/", (request, response) -> {
-            final Authentication authentication = AuthenticationContext.getAuthentication();
-            final SecurityToken token = TokenManager.create(authentication.getAccountId());
-            return json(token.getId(), response);
-        });
-        path("/current", () -> {
-            get("", (request, response) -> {
-                final Authentication authentication = AuthenticationContext.getAuthentication();
-                final SecurityToken token = TokenManager.retrieveByPayload(authentication.getTokenPayload());
-                return json(token, response);
+        path("/tokens", () -> {
+            post("/", (request, response) -> {
+                final SecurityToken token = tokenFacade.createForCurrentAccount();
+                return json(token.getPayload(), response);
             });
-            delete("", (request, response) -> {
-                final Authentication authentication = AuthenticationContext.getAuthentication();
-                TokenManager.deleteByPayload(authentication.getTokenPayload());
-                return json(response);
+            path("/current", () -> {
+                get("", (request, response) -> {
+                    final SecurityToken token = tokenFacade.retrieveCurrent();
+                    return json(token, response);
+                });
+                delete("", (request, response) -> {
+                    tokenFacade.deleteCurrent();
+                    return json(response);
+                });
             });
         });
     }

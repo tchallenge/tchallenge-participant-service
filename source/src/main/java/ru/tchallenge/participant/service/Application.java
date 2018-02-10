@@ -10,7 +10,7 @@ import ru.tchallenge.participant.service.domain.specialization.SpecializationRou
 import ru.tchallenge.participant.service.domain.workbook.WorkbookRouter;
 import ru.tchallenge.participant.service.domain.event.EventRouter;
 import ru.tchallenge.participant.service.security.SecurityRouter;
-import ru.tchallenge.participant.service.security.authentication.AuthenticationFacade;
+import ru.tchallenge.participant.service.security.authentication.AuthenticationInterceptor;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,6 +26,8 @@ public class Application implements Runnable {
     private final String applicationName = "T-Challenge Participant Service";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private final AuthenticationInterceptor authenticationInterceptor = AuthenticationInterceptor.INSTANCE;
+
     @Override
     public void run() {
 
@@ -39,7 +41,7 @@ public class Application implements Runnable {
             throw new RuntimeException(e);
         }
 
-        before("/*", AuthenticationFacade::authenticate);
+        before("/*", (request, response) -> authenticationInterceptor.authenticate(request));
 
         get("/specification", (request, response) -> {
             response.header("Content-Type","application/yaml");
@@ -50,7 +52,7 @@ public class Application implements Runnable {
             return "1.0.0-SNAPSHOT";
         });
 
-        path("/security", SecurityRouter.INSTANCE);
+        path("/", SecurityRouter.INSTANCE);
 
         path("/accounts", AccountRouter.INSTANCE);
 

@@ -1,30 +1,31 @@
 package ru.tchallenge.participant.service.security.registration;
 
+import java.util.Collection;
+
 import lombok.Builder;
 import lombok.Data;
-import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 
-import java.util.Collection;
+import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 
 @Data
 @Builder
 public final class SecurityRegistrationInvoice implements ValidationAware {
 
-    private String backlink;
-    private String email;
-    private String password;
-    private String quickname;
+    private final String email;
+    private final String quickname;
+    private final String password;
+    private final String backlinkTemplate;
 
     @Override
     public void registerViolations(final Collection<String> violations) {
         if (email == null || email.isEmpty()) {
-            violations.add("Email is invalid");
+            violations.add("Email is missing or invalid");
         }
-        if (backlink == null || backlink.isEmpty()) {
-            violations.add("Back link is invalid");
+        if (backlinkTemplate == null || backlinkTemplate.isEmpty()) {
+            violations.add("Backlink template is missing or invalid");
         }
         if (password == null || password.isEmpty()) {
-            violations.add("Password is invalid");
+            violations.add("Password is missing or invalid");
         }
     }
 }

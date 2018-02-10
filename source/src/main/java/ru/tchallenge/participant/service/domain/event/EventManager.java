@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
+import ru.tchallenge.participant.service.security.authentication.Authentication;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
 import ru.tchallenge.participant.service.utility.data.Id;
 
@@ -12,6 +13,7 @@ public final class EventManager {
 
     public static final EventManager INSTANCE = new EventManager();
 
+    private final AuthenticationContext authenticationContext = AuthenticationContext.INSTANCE;
     private final EventProjector eventProjector = EventProjector.INSTANCE;
     private final EventRepository eventRepository = EventRepository.INSTANCE;
 
@@ -20,7 +22,7 @@ public final class EventManager {
     }
 
     public Event retrieveById(final Id id) {
-        authenticated();
+        authentication();
         final EventDocument document = eventRepository.findById(id);
         if (document == null) {
             throw new RuntimeException("Event is not found");
@@ -29,7 +31,7 @@ public final class EventManager {
     }
 
     public EventSearchResult retrieveSearchResult(final EventSearchInvoice invoice) {
-        authenticated();
+        authentication();
         final List<EventDocument> documents = eventRepository.find(invoice);
         return EventSearchResult.builder()
                 .items(ImmutableList.copyOf(mapSearchItems(documents)))
@@ -44,7 +46,7 @@ public final class EventManager {
                 .collect(Collectors.toList());
     }
 
-    private void authenticated() {
-        AuthenticationContext.getAuthentication().getAccountId();
+    private Authentication authentication() {
+        return authenticationContext.getAuthentication();
     }
 }

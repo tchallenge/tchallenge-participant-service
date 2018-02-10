@@ -1,5 +1,8 @@
 package ru.tchallenge.participant.service.domain.account;
 
+import java.sql.Date;
+import java.time.Instant;
+
 import org.bson.Document;
 import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
 import ru.tchallenge.participant.service.utility.data.IdAware;
@@ -20,6 +23,7 @@ public final class AccountSystemManager {
         document.put("status", "APPROVED");
         final Document personalityDocument = createAccountPersonalityDocument(invoice.getPersonality());
         document.put("personality", personalityDocument);
+        document.put("registeredAt", Date.from(Instant.now()));
         accountRepository.insert(new DocumentWrapper(document));
         return new DocumentWrapper(document).justId();
     }

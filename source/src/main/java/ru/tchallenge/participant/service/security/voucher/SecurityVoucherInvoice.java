@@ -12,15 +12,15 @@ import ru.tchallenge.participant.service.utility.validation.ValidationAware;
 public final class SecurityVoucherInvoice implements ValidationAware {
 
     private final String email;
-    private final String backlink;
+    private final String backlinkTemplate;
 
     @Override
     public void registerViolations(final Collection<String> violations) {
         if (email == null || email.isEmpty()) {
-            violations.add("Email is invalid");
+            violations.add("Email is invalid or missing");
         }
-        if (backlink == null || backlink.isEmpty()) {
-            violations.add("Back link is invalid");
+        if (backlinkTemplate == null || backlinkTemplate.isEmpty()) {
+            violations.add("Backlink template is invalid or missing");
         }
     }
 }

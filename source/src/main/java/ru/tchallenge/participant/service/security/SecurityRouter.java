@@ -1,7 +1,6 @@
 package ru.tchallenge.participant.service.security;
 
 import spark.RouteGroup;
-
 import static spark.Spark.path;
 
 import ru.tchallenge.participant.service.security.registration.SecurityRegistrationRouter;
@@ -18,8 +17,10 @@ public final class SecurityRouter implements RouteGroup {
 
     @Override
     public void addRoutes() {
-        path("/registrations", new SecurityRegistrationRouter());
-        path("/tokens", new SecurityTokenRouter());
-        path("/", SecurityVoucherRouter.INSTANCE);
+        path("/security", () -> {
+            path("/", SecurityRegistrationRouter.INSTANCE);
+            path("/", SecurityTokenRouter.INSTANCE);
+            path("/", SecurityVoucherRouter.INSTANCE);
+        });
     }
 }

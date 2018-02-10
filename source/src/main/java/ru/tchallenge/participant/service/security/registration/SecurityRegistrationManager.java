@@ -1,12 +1,22 @@
 package ru.tchallenge.participant.service.security.registration;
 
-import ru.tchallenge.participant.service.domain.account.*;
-
 import java.util.UUID;
+
+import ru.tchallenge.participant.service.domain.account.AccountInvoice;
+import ru.tchallenge.participant.service.domain.account.AccountPersonality;
+import ru.tchallenge.participant.service.domain.account.AccountSystemManager;
 
 public final class SecurityRegistrationManager {
 
-    public static SecurityRegistration create(final SecurityRegistrationInvoice invoice) {
+    public static final SecurityRegistrationManager INSTANCE = new SecurityRegistrationManager();
+
+    private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
+
+    private SecurityRegistrationManager() {
+
+    }
+
+    public SecurityRegistration create(final SecurityRegistrationInvoice invoice) {
         final AccountInvoice accountInvoice = AccountInvoice.builder()
                 .email(invoice.getEmail())
                 .password(invoice.getPassword())
@@ -14,16 +24,9 @@ public final class SecurityRegistrationManager {
                         .quickname(invoice.getQuickname())
                         .build())
                 .build();
-        ACCOUNT_SYSTEM_MANAGER.create(accountInvoice);
-        // TODO: send a email with voucher
+        accountSystemManager.create(accountInvoice);
         return SecurityRegistration.builder()
                 .id(UUID.randomUUID().toString())
                 .build();
-    }
-
-    private static final AccountSystemManager ACCOUNT_SYSTEM_MANAGER = AccountSystemManager.INSTANCE;
-
-    private SecurityRegistrationManager() {
-
     }
 }

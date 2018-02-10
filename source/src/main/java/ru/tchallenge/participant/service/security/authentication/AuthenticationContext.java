@@ -2,21 +2,31 @@ package ru.tchallenge.participant.service.security.authentication;
 
 public final class AuthenticationContext {
 
-    public static boolean isAuthenticated() {
-        return AUTHENTICATION_CONTAINER.get() != null;
+    public static final AuthenticationContext INSTANCE = new AuthenticationContext();
+
+    private final ThreadLocal<Authentication> authenticationContainer = new ThreadLocal<>();
+
+    private AuthenticationContext() {
+
     }
 
-    public static Authentication getAuthentication() {
-        Authentication result = AUTHENTICATION_CONTAINER.get();
+    public boolean isAuthenticated() {
+        return authenticationContainer.get() != null;
+    }
+
+    public Authentication getAuthentication() {
+        final Authentication result = authenticationContainer.get();
         if (result == null) {
-            throw new RuntimeException("Not authenticated");
+            throw notAuthenticated();
         }
         return result;
     }
 
-    public static void setAuthentication(Authentication authentication) {
-        AUTHENTICATION_CONTAINER.set(authentication);
+    public void setAuthentication(final Authentication authentication) {
+        authenticationContainer.set(authentication);
     }
 
-    private static final ThreadLocal<Authentication> AUTHENTICATION_CONTAINER = new ThreadLocal<>();
+    private RuntimeException notAuthenticated() {
+        return new RuntimeException("Not authenticated");
+    }
 }
