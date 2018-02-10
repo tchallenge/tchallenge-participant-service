@@ -13,9 +13,17 @@ public final class TemplateManager {
 
     }
 
-    public String render(final String templateName, final Object model) {
+    public String render(final String path, final Object model) {
         try {
-            return handlebars.compile(templateName).apply(model);
+            return handlebars.compile(path).apply(model);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    public String renderInline(final String template, final Object model) {
+        try {
+            return handlebars.compileInline(template).apply(model);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
