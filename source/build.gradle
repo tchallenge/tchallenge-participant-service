@@ -45,6 +45,7 @@ dependencies {
 
     compile     'com.google.guava:guava:23.6-jre'
     compile     'javax.mail:javax.mail-api:1.6.0'
+    compile     'com.github.jknack:handlebars:4.0.6'
 
     compile     'com.sun.mail:javax.mail:1.6.0'
 
