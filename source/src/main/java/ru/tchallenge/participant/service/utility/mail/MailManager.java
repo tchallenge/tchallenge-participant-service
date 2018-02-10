@@ -25,7 +25,7 @@ public final class MailManager {
     private final Session session;
 
     {
-        this.mime = "text/html;charset=utf-8";
+        this.mime = "text/html";
         this.origin = "info@t-challenge.ru";
         this.sendgridEnabled = sendgridEnabled();
         this.sendgrid = this.sendgridEnabled ? sendgrid() : null;
@@ -45,8 +45,8 @@ public final class MailManager {
             final MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(origin));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(invoice.getEmail()));
-            message.setSubject(invoice.getSubject());
-            message.setContent(invoice.getContent(), mime);
+            message.setSubject(invoice.getSubject(), "UTF-8");
+            message.setContent(invoice.getContent(), "text/html;charset=utf-8");
             Transport.send(message);
         } catch (final Exception exception) {
             throw wrapped(exception);
