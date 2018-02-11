@@ -64,7 +64,7 @@ public final class ProblemDocument extends DocumentWrapper {
     }
 
     public ProblemDocument complexity(final Integer complexity) {
-        document.put(ATTRIBUTE_DIFFICULTY, complexity);
+        document.put(ATTRIBUTE_COMPLEXITY, complexity);
         return this;
     }
 
