@@ -1,18 +1,19 @@
 package ru.tchallenge.participant.service.domain.problem;
 
-import spark.RouteGroup;
+import java.util.List;
 
+import spark.RouteGroup;
+import static spark.Spark.*;
+
+import ru.tchallenge.participant.service.utility.data.IdAware;
 import static ru.tchallenge.participant.service.utility.serialization.Json.body;
 import static ru.tchallenge.participant.service.utility.serialization.Json.json;
-import static spark.Spark.get;
-import static spark.Spark.path;
-import static spark.Spark.post;
 
 public final class ProblemRouter implements RouteGroup {
 
     public static ProblemRouter INSTANCE = new ProblemRouter();
 
-    private final ProblemManager problemManager = ProblemManager.INSTANCE;
+    private final ProblemFacade problemFacade = ProblemFacade.INSTANCE;
 
     private ProblemRouter() {
 
@@ -21,10 +22,19 @@ public final class ProblemRouter implements RouteGroup {
     @Override
     public void addRoutes() {
         path("/problems", () -> {
-            get("/", (request, response) -> json(problemManager.retrieveAll(), response));
+            get("/", (request, response) -> {
+                final List<Problem> problems = problemFacade.retrieveAll();
+                return json(problems, response);
+            });
+            post("/", (request, response) -> {
+                final ProblemInvoice invoice = body(ProblemInvoice.class, request);
+                final IdAware idAware = problemFacade.create(invoice);
+                return json(idAware.justId(), response);
+            });
             post("/random", (request, response) -> {
                 final ProblemRandomInvoice invoice = body(ProblemRandomInvoice.class, request);
-                return json(problemManager.retrieveRandom(invoice), response);
+                final List<Problem> problems = problemFacade.retrieveRandom(invoice);
+                return json(problems, response);
             });
         });
     }
