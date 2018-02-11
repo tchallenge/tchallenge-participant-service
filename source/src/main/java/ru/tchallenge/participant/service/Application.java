@@ -1,38 +1,81 @@
 package ru.tchallenge.participant.service;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+
+import lombok.extern.slf4j.Slf4j;
+
+import spark.RouteGroup;
+import static spark.Spark.*;
+
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import ru.tchallenge.participant.service.domain.account.AccountRouter;
+import ru.tchallenge.participant.service.domain.event.EventRouter;
 import ru.tchallenge.participant.service.domain.problem.ProblemRouter;
 import ru.tchallenge.participant.service.domain.specialization.SpecializationRouter;
 import ru.tchallenge.participant.service.domain.workbook.WorkbookRouter;
-import ru.tchallenge.participant.service.domain.event.EventRouter;
 import ru.tchallenge.participant.service.security.SecurityRouter;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationInterceptor;
 
-import java.io.IOException;
-import java.net.URL;
-
-import static spark.Spark.*;
-
-public class Application implements Runnable {
+@Slf4j
+public final class Application implements Runnable {
 
     public static void main(String... arguments) {
         new Application().run();
     }
 
-    private final String applicationName = "T-Challenge Participant Service";
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
+    private final AccountRouter accountRouter = AccountRouter.INSTANCE;
     private final AuthenticationInterceptor authenticationInterceptor = AuthenticationInterceptor.INSTANCE;
+    private final EventRouter eventRouter = EventRouter.INSTANCE;
+    private final ProblemRouter problemRouter = ProblemRouter.INSTANCE;
+    private final SecurityRouter securityRouter = SecurityRouter.INSTANCE;
+    private final SpecializationRouter specializationRouter = SpecializationRouter.INSTANCE;
+    private final WorkbookRouter workbookRouter = WorkbookRouter.INSTANCE;
 
     @Override
     public void run() {
+        log.info("Application started...");
+        registerErrorHandlers();
+        registerInterceptors();
+        registerDomainRouters();
+        registerSecurityRouters();
+        registerUtilityRouters();
+    }
 
-        log.info("{} started...", applicationName);
+    private void registerErrorHandlers() {
+        exception(Exception.class, (exception, request, response) -> {
+            log.error("Requested operation terminated with an error", exception);
+            response.status(400);
+            response.body(exception.getMessage());
+        });
+    }
 
+    private void registerInterceptors() {
+        before("/*", (request, response) -> authenticationInterceptor.authenticate(request));
+    }
+
+    private void registerDomainRouters() {
+        registerRoutersFromRoot(
+                accountRouter,
+                eventRouter,
+                problemRouter,
+                specializationRouter,
+                workbookRouter
+        );
+    }
+
+    private void registerSecurityRouters() {
+        registerRoutersFromRoot(securityRouter);
+    }
+
+    private void registerRoutersFromRoot(final RouteGroup... routers) {
+        Arrays.asList(routers).forEach((router) -> path("/", router));
+    }
+
+    private void registerUtilityRouters() {
         final String specification;
         try {
             final URL specificationUrl = Resources.getResource("specification/openapi.yaml");
@@ -40,33 +83,12 @@ public class Application implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        before("/*", (request, response) -> authenticationInterceptor.authenticate(request));
-
         get("/specification", (request, response) -> {
-            response.header("Content-Type","application/yaml");
+            response.header("Content-Type", "application/yaml");
             return specification;
         });
-
         get("/version", (request, response) -> {
             return "1.0.0-SNAPSHOT";
-        });
-
-        path("/", SecurityRouter.INSTANCE);
-
-        path("/accounts", AccountRouter.INSTANCE);
-
-        path("/", EventRouter.INSTANCE);
-
-        path("/", WorkbookRouter.INSTANCE);
-
-        path("/", SpecializationRouter.INSTANCE);
-
-        path("/", ProblemRouter.INSTANCE);
-
-        exception(Exception.class, (e, request, response) -> {
-            response.status(400);
-            response.body(e.getMessage());
         });
     }
 }
