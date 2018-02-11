@@ -19,6 +19,7 @@ import ru.tchallenge.participant.service.domain.specialization.SpecializationRou
 import ru.tchallenge.participant.service.domain.workbook.WorkbookRouter;
 import ru.tchallenge.participant.service.security.SecurityRouter;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationInterceptor;
+import static ru.tchallenge.participant.service.utility.serialization.Json.json;
 
 @Slf4j
 public final class Application implements Runnable {
@@ -54,6 +55,7 @@ public final class Application implements Runnable {
     }
 
     private void registerInterceptors() {
+        options("/*", (request, response) -> json(response));
         before("/*", authenticationInterceptor::before);
         after("/*", authenticationInterceptor::after);
         before("/*", (request, response) -> {
