@@ -6,9 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import spark.Request;
+import spark.Response;
 
 import com.google.common.collect.Sets;
 
+import ru.tchallenge.participant.service.security.token.SecurityToken;
+import ru.tchallenge.participant.service.security.token.SecurityTokenContext;
 import static ru.tchallenge.participant.service.utility.serialization.Json.body;
 
 public final class AuthenticationInterceptor {
@@ -20,14 +23,26 @@ public final class AuthenticationInterceptor {
     private final String authorizationHeaderPrefix = "BEARER ";
     private final AuthenticationContext authenticationContext = AuthenticationContext.INSTANCE;
     private final AuthenticationManager authenticationManager = AuthenticationManager.INSTANCE;
+    private final SecurityTokenContext securityTokenContext = SecurityTokenContext.INSTANCE;
 
     private AuthenticationInterceptor() {
         authorizationByInvoice = Sets.newHashSet(new EndpointSignature("POST", "/security/tokens/"));
     }
 
-    public void authenticate(final Request request) {
+    public void before(final Request request, final Response response) {
         final Authentication authentication = createAuthentication(request);
         authenticationContext.setAuthentication(authentication);
+    }
+
+    public void after(final Request request, final Response response) {
+        provideNewTokenPayloadIfPossible(response);
+    }
+
+    private void provideNewTokenPayloadIfPossible(final Response response) {
+        if (securityTokenContext.isNewTokenCreated()) {
+            final SecurityToken token = securityTokenContext.getCreatedToken();
+            response.header(authorizationHeaderName, authorizationHeaderPrefix + token.getPayload());
+        }
     }
 
     private Authentication createAuthentication(final Request request) {

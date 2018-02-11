@@ -54,7 +54,8 @@ public final class Application implements Runnable {
     }
 
     private void registerInterceptors() {
-        before("/*", (request, response) -> authenticationInterceptor.authenticate(request));
+        before("/*", authenticationInterceptor::before);
+        after("/*", authenticationInterceptor::after);
     }
 
     private void registerDomainRouters() {

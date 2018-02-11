@@ -13,9 +13,10 @@ public final class TokenManager {
 
     public static final TokenManager INSTANCE = new TokenManager();
 
+    private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
+    private final SecurityTokenContext securityTokenContext = SecurityTokenContext.INSTANCE;
     private final Map<String, SecurityToken> tokens = new HashMap<>();
     private final Duration tokenExpirationPeriod = Duration.ofHours(1);
-    private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
 
     private TokenManager() {
 
@@ -24,6 +25,7 @@ public final class TokenManager {
     public SecurityToken create(final String accountId) {
         final SecurityToken token = createNewToken(accountId);
         tokens.put(token.getPayload(), token);
+        securityTokenContext.setCreatedToken(token);
         return token;
     }
 

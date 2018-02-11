@@ -20,7 +20,7 @@ public final class SecurityTokenRouter implements RouteGroup {
         path("/tokens", () -> {
             post("/", (request, response) -> {
                 final SecurityToken token = tokenFacade.createForCurrentAccount();
-                return json(token.getPayload(), response);
+                return json(token.getId(), response);
             });
             path("/current", () -> {
                 get("", (request, response) -> {
