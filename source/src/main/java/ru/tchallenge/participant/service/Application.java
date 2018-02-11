@@ -56,6 +56,11 @@ public final class Application implements Runnable {
     private void registerInterceptors() {
         before("/*", authenticationInterceptor::before);
         after("/*", authenticationInterceptor::after);
+        before("/*", (request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Request-Method", "*");
+            response.header("Access-Control-Allow-Headers", "*");
+        });
     }
 
     private void registerDomainRouters() {
