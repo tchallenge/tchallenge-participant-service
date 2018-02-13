@@ -9,6 +9,7 @@ import ru.tchallenge.participant.service.domain.problem.Problem;
 @Builder
 public final class Assignment {
 
+    private final Integer index;
     private final Problem problem;
     private final Integer score;
     private final Integer scoreMax;

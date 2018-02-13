@@ -49,12 +49,22 @@ public final class WorkbookProjector extends GenericProjector {
         final List<Assignment> result = new ArrayList<>();
         final List<AssignmentDocument> assignmentDocuments = document.getAssignments();
         final Map<Id, ProblemDocument> problemDocuments = problemDocuments(assignmentDocuments);
+        final Indexer indexer = new Indexer();
         for (final AssignmentDocument assignmentDocument : assignmentDocuments) {
             final ProblemDocument problemDocument = problemDocuments.get(assignmentDocument.getProblemId());
-            final Assignment assignment = assignmentProjector.assignment(assignmentDocument, problemDocument, classified);
+            final Assignment assignment = assignmentProjector.assignment(assignmentDocument, problemDocument, classified, indexer.inc());
             result.add(assignment);
         }
         return result;
+    }
+
+    private static final class Indexer {
+
+        private int index = 0;
+
+        public int inc() {
+            return ++index;
+        }
     }
 
     @SuppressWarnings("unchecked")

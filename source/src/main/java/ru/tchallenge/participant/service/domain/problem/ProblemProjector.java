@@ -49,9 +49,10 @@ public final class ProblemProjector extends GenericProjector {
     }
 
     private List<ProblemOption> problemOptions(final List<ProblemOptionDocument> documents, final boolean classified) {
+        final Indexer indexer = new Indexer();
         return documents
                 .stream()
-                .map(d -> optionProjector.problemOption(d, classified))
+                .map(d -> optionProjector.problemOption(d, classified, indexer.inc()))
                 .collect(Collectors.toList());
     }
 
@@ -60,5 +61,14 @@ public final class ProblemProjector extends GenericProjector {
                 .stream()
                 .map(snippetProjector::problemSnippet)
                 .collect(Collectors.toList());
+    }
+
+    private static final class Indexer {
+
+        private int index = 0;
+
+        public int inc() {
+            return ++index;
+        }
     }
 }

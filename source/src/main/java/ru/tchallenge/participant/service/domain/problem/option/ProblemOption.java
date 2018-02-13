@@ -7,6 +7,8 @@ import lombok.Data;
 @Builder
 public final class ProblemOption {
 
+    private final Integer index;
+    private final String textcode;
     private final String content;
     private final Boolean correct;
 }

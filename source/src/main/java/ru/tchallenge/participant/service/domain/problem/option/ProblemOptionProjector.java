@@ -10,8 +10,12 @@ public final class ProblemOptionProjector extends GenericProjector {
 
     }
 
-    public ProblemOption problemOption(final ProblemOptionDocument document, final boolean classified) {
+    public ProblemOption problemOption(final ProblemOptionDocument document,
+                                       final boolean classified,
+                                       final int index) {
         return ProblemOption.builder()
+                .index(index)
+                .textcode(String.valueOf( (char) (64 + index)))
                 .content(document.getContent())
                 .correct(classified ? null : document.getCorrect())
                 .build();

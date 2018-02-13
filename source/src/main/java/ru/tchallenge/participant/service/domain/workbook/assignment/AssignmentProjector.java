@@ -16,8 +16,10 @@ public final class AssignmentProjector extends GenericProjector {
 
     public Assignment assignment(final AssignmentDocument assignmentDocument,
                                  final ProblemDocument problemDocument,
-                                 final boolean classified) {
+                                 final boolean classified,
+                                 final int index) {
         return Assignment.builder()
+                .index(index)
                 .problem(problemProjector.problem(problemDocument, classified))
                 .score(assignmentDocument.getScore())
                 .scoreMax(assignmentDocument.getScoreMax())
