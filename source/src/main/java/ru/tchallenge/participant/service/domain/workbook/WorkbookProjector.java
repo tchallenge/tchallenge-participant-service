@@ -42,7 +42,7 @@ public final class WorkbookProjector extends GenericProjector {
     }
 
     private boolean classifiedByStatus(final WorkbookStatus status) {
-        return status != WorkbookStatus.ASSESSED;
+        return !(status == WorkbookStatus.ASSESSED || status == WorkbookStatus.SUBMITTED);
     }
 
     private List<Assignment> assignments(final WorkbookDocument document, final boolean classified) {

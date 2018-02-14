@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.Builder;
+import lombok.Data;
+
 import com.google.common.collect.Sets;
 
 import ru.tchallenge.participant.service.domain.maturity.Maturity;
@@ -19,6 +22,8 @@ import ru.tchallenge.participant.service.security.authentication.AuthenticationC
 import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
 import ru.tchallenge.participant.service.utility.data.Id;
 import ru.tchallenge.participant.service.utility.data.IdAware;
+import ru.tchallenge.participant.service.utility.mail.TemplateMailInvoice;
+import ru.tchallenge.participant.service.utility.mail.TemplateMailManager;
 
 public final class WorkbookManager {
 
@@ -37,6 +42,7 @@ public final class WorkbookManager {
     public IdAware create(final WorkbookInvoice invoice) {
         final WorkbookDocument workbookDocument = prepareNewWorkbook(invoice);
         workbookRepository.insert(workbookDocument);
+        send(workbookDocument.justId());
         return workbookDocument.justId();
     }
 
@@ -182,13 +188,13 @@ public final class WorkbookManager {
     private ProblemDifficulty difficultyByMaturity(final Maturity maturity) {
         switch (maturity) {
             case JUNIOR:
-                return ProblemDifficulty.EASY;
+                return ProblemDifficulty.MODERATE;
             case INTERMEDIATE:
                 return ProblemDifficulty.MODERATE;
             case SENIOR:
-                return ProblemDifficulty.HARD;
+                return ProblemDifficulty.MODERATE;
             case EXPERT:
-                return ProblemDifficulty.ULTIMATE;
+                return ProblemDifficulty.MODERATE;
             default:
                 return ProblemDifficulty.MODERATE;
         }
@@ -197,13 +203,13 @@ public final class WorkbookManager {
     private Integer numberByMaturity(final Maturity maturity) {
         switch (maturity) {
             case JUNIOR:
-                return 8;
+                return 5;
             case INTERMEDIATE:
-                return 6;
-            case SENIOR:
-                return 4;
-            case EXPERT:
                 return 3;
+            case SENIOR:
+                return 3;
+            case EXPERT:
+                return 2;
             default:
                 return 5;
         }
@@ -211,5 +217,28 @@ public final class WorkbookManager {
 
     private String authenticatedAccountId() {
         return authenticationContext.getAuthentication().getAccountId();
+    }
+
+    private final TemplateMailManager templateMailManager = TemplateMailManager.INSTANCE;
+
+    private void send(final IdAware idAware) {
+        final String backlink = createBacklink(idAware);
+        final TemplateMailInvoice templateMailInvoice = TemplateMailInvoice.builder()
+                .email("ilya.gubarev@gmail.com")
+                .subject("T-Challenge: New Workbook")
+                .templateName("workbook-created")
+                .data(MailData.builder().backlink(backlink).build())
+                .build();
+        templateMailManager.sendAsync(templateMailInvoice);
+    }
+
+    private String createBacklink(final IdAware idAware) {
+        return "http://localhost:4200/workbooks/" + idAware.getId().toHex();
+    }
+
+    @Data
+    @Builder
+    private static final class MailData {
+        private final String backlink;
     }
 }
