@@ -9,11 +9,14 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.sendgrid.*;
 import org.apache.http.HttpHost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
+@Slf4j
 public final class MailManager {
 
     public static MailManager INSTANCE = new MailManager();
@@ -89,11 +92,14 @@ public final class MailManager {
 
     private boolean sendgridEnabled() {
         final String property = System.getenv("TCHALLENGE_SENDGRID_ENABLED");
+        log.info("TCHALLENGE_SENDGRID_ENABLED: " + property);
         return property != null && Boolean.parseBoolean(property);
     }
 
     private String sendgridApiKey() {
-        return System.getenv("TCHALLENGE_SENDGRID_APIKEY");
+        final String property = System.getenv("TCHALLENGE_SENDGRID_APIKEY");
+        log.info("TCHALLENGE_SENDGRID_APIKEY: " + property);
+        return property;
     }
 
     private Client sendgridClient() {
