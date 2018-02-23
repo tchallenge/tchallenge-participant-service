@@ -1,0 +1,1 @@
+{"_id":{"$oid":"5a63889054be7f36dc22f3a8"},"permalink":"joker2017","caption":"joker 2017","description":"Крупнейшая ежегодная Java-конференция в России","greeting":"---","validFrom":{"$date":"2017-01-01T00:00:00.000Z"},"validUntil":{"$date":"2019-01-01T00:00:00.000Z"},"status":"APPROVED","specializationIds":[{"$oid":"5a763eca975e61158cde6fac"}]}
