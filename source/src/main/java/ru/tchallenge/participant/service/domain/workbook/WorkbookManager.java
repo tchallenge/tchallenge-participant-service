@@ -233,7 +233,7 @@ public final class WorkbookManager {
     }
 
     private String createBacklink(final IdAware idAware) {
-        return "http://localhost:4200/workbooks/" + idAware.getId().toHex();
+        return "http://t-challenge.ru/workbooks/" + idAware.getId().toHex();
     }
 
     @Data
