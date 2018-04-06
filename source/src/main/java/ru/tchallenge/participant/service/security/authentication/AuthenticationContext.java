@@ -1,32 +1,45 @@
 package ru.tchallenge.participant.service.security.authentication;
 
-public final class AuthenticationContext {
+import java.util.Optional;
 
-    public static final AuthenticationContext INSTANCE = new AuthenticationContext();
+/**
+ * Request authentication context.
+ *
+ * @author Ilia Gubarev
+ */
+public interface AuthenticationContext {
 
-    private final ThreadLocal<Authentication> authenticationContainer = new ThreadLocal<>();
+    /**
+     * Checks if authentication is available for the current request.
+     *
+     * @return <code>true</code> if authentication is available.
+     */
+    boolean isAuthenticationAvailable();
 
-    private AuthenticationContext() {
+    /**
+     * Gets authentication for the current request.
+     *
+     * @return authentication for the current request.
+     * @throws RuntimeException if authentication is not available.
+     */
+    Authentication getAuthentication();
 
-    }
+    /**
+     * Gets authentication for the current request.
+     *
+     * @return optional authentication for the current request.
+     */
+    Optional<Authentication> getAuthenticationIfAvailable();
 
-    public boolean isAuthenticated() {
-        return authenticationContainer.get() != null;
-    }
+    /**
+     * Removes authentication from the current request.
+     */
+    void removeAuthentication();
 
-    public Authentication getAuthentication() {
-        final Authentication result = authenticationContainer.get();
-        if (result == null) {
-            throw notAuthenticated();
-        }
-        return result;
-    }
-
-    public void setAuthentication(final Authentication authentication) {
-        authenticationContainer.set(authentication);
-    }
-
-    private RuntimeException notAuthenticated() {
-        return new RuntimeException("Not authenticated");
-    }
+    /**
+     * Sets authentication for teh current request.
+     *
+     * @param authentication to be set.
+     */
+    void setAuthentication(Authentication authentication);
 }

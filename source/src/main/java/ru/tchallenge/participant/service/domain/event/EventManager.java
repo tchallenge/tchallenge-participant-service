@@ -7,13 +7,14 @@ import com.google.common.collect.ImmutableList;
 
 import ru.tchallenge.participant.service.security.authentication.Authentication;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
+import ru.tchallenge.participant.service.security.authentication.AuthenticationContextBean;
 import ru.tchallenge.participant.service.utility.data.Id;
 
 public final class EventManager {
 
     public static final EventManager INSTANCE = new EventManager();
 
-    private final AuthenticationContext authenticationContext = AuthenticationContext.INSTANCE;
+    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
     private final EventProjector eventProjector = EventProjector.INSTANCE;
     private final EventRepository eventRepository = EventRepository.INSTANCE;
 

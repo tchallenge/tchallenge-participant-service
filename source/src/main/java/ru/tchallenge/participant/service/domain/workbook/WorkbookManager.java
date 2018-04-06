@@ -19,6 +19,7 @@ import ru.tchallenge.participant.service.domain.specialization.SpecializationRep
 import ru.tchallenge.participant.service.domain.workbook.assignment.AssignmentDocument;
 import ru.tchallenge.participant.service.domain.workbook.assignment.AssignmentUpdateInvoice;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
+import ru.tchallenge.participant.service.security.authentication.AuthenticationContextBean;
 import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
 import ru.tchallenge.participant.service.utility.data.Id;
 import ru.tchallenge.participant.service.utility.data.IdAware;
@@ -29,7 +30,7 @@ public final class WorkbookManager {
 
     public static WorkbookManager INSTANCE = new WorkbookManager();
 
-    private final AuthenticationContext authenticationContext = AuthenticationContext.INSTANCE;
+    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
     private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
     private final ProblemRepository problemRepository = ProblemRepository.INSTANCE;
     private final WorkbookProjector workbookProjector = WorkbookProjector.INSTANCE;

@@ -3,6 +3,7 @@ package ru.tchallenge.participant.service.domain.account;
 import org.bson.Document;
 
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
+import ru.tchallenge.participant.service.security.authentication.AuthenticationContextBean;
 import ru.tchallenge.participant.service.utility.data.DocumentWrapper;
 import ru.tchallenge.participant.service.utility.data.Id;
 
@@ -15,7 +16,7 @@ public final class AccountManager {
     private final AccountProjector accountProjector = AccountProjector.INSTANCE;
     private final AccountRepository accountRepository = AccountRepository.INSTANCE;
     private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
-    private final AuthenticationContext authenticationContext = AuthenticationContext.INSTANCE;
+    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
 
     private AccountManager() {
 

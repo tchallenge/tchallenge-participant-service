@@ -1,13 +1,14 @@
 package ru.tchallenge.participant.service.security.token;
 
 import ru.tchallenge.participant.service.security.authentication.AuthenticationContext;
+import ru.tchallenge.participant.service.security.authentication.AuthenticationContextBean;
 
 public final class TokenFacade {
 
     public static final TokenFacade INSTANCE = new TokenFacade();
 
     private final TokenManager tokenManager = TokenManager.INSTANCE;
-    private final AuthenticationContext authenticationContext = AuthenticationContext.INSTANCE;
+    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
 
     private TokenFacade() {
 

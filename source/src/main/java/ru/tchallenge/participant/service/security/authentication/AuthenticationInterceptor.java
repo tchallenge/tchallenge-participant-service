@@ -21,7 +21,7 @@ public final class AuthenticationInterceptor {
     private final Set<EndpointSignature> authorizationByInvoice;
     private final String authorizationHeaderName = "Authorization";
     private final String authorizationHeaderPrefix = "BEARER ";
-    private final AuthenticationContext authenticationContext = AuthenticationContext.INSTANCE;
+    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
     private final AuthenticationManager authenticationManager = AuthenticationManager.INSTANCE;
     private final SecurityTokenContext securityTokenContext = SecurityTokenContext.INSTANCE;
 
