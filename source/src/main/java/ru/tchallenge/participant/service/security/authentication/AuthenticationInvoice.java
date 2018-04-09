@@ -15,6 +15,7 @@ public final class AuthenticationInvoice implements ValidationAware {
     private final String email;
     private final String password;
     private final String passwordUpdate;
+    private final String tokenPayload;
     private final String voucherPayload;
 
     public boolean isPasswordUpdateRequested() {
