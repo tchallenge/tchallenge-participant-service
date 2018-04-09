@@ -11,14 +11,17 @@ import spark.Request;
 @Builder
 public final class SimpleEndpointSignature {
 
-    public static SimpleEndpointSignature of(final Request request) {
-        Objects.requireNonNull(request, "Request cannot be null");
-        return SimpleEndpointSignature.builder()
-                .method(request.requestMethod())
-                .uri(request.uri())
-                .build();
-    }
-
     private final String method;
     private final String uri;
+
+    public boolean matches(final Request request) {
+        Objects.requireNonNull(request, "Request cannot be null");
+        if (this.method != null && !request.requestMethod().equalsIgnoreCase(this.method)) {
+            return false;
+        }
+        if (this.uri != null && !request.uri().matches(this.uri)) {
+            return false;
+        }
+        return true;
+    }
 }

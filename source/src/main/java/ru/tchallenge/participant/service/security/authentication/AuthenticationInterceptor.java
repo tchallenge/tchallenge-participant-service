@@ -1,5 +1,6 @@
 package ru.tchallenge.participant.service.security.authentication;
 
+import java.util.Collection;
 import java.util.Set;
 
 import spark.Request;
@@ -16,7 +17,7 @@ public final class AuthenticationInterceptor {
 
     public static final AuthenticationInterceptor INSTANCE = new AuthenticationInterceptor();
 
-    private final Set<SimpleEndpointSignature> authorizationByInvoice;
+    private final Collection<SimpleEndpointSignature> authorizationByInvoice;
     private final String authorizationHeaderName = "Authorization";
     private final String authorizationHeaderPrefix = "BEARER ";
     private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
@@ -52,7 +53,9 @@ public final class AuthenticationInterceptor {
     }
 
     private boolean shouldAuthenticateByInvoice(final Request request) {
-        return authorizationByInvoice.contains(SimpleEndpointSignature.of(request));
+        return authorizationByInvoice
+                .stream()
+                .anyMatch((s) -> s.matches(request));
     }
 
     private Authentication authenticateByInvoice(final Request request) {
