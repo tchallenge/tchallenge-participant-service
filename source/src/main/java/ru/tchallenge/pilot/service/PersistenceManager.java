@@ -3,22 +3,23 @@ package ru.tchallenge.pilot.service;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import org.bson.Document;
 
-public final class PersistenceManager {
+public class PersistenceManager {
 
-    public static MongoCollection<Document> getDocumentCollection(final String name) {
+    public static MongoCollection<Document> getDocumentCollection(String name) {
         return DATABASE.getCollection(name);
     }
 
-    private static final MongoDatabase DATABASE;
-    private static final String DATABASE_NAME = "tchallenge-participant";
-    private static final String DATABASE_HOST = "localhost";
-    private static final Integer DATABASE_PORT = 27017;
+    private static MongoDatabase DATABASE;
 
     static {
-        MongoClient mongoClient = new MongoClient(DATABASE_HOST, DATABASE_PORT);
-        DATABASE = mongoClient.getDatabase(DATABASE_NAME);
+        String mongodbHost = System.getenv("TCHALLENGE_MONGODB_HOST");
+        String mongodbPort = System.getenv("TCHALLENGE_MONGODB_PORT");
+        String mongodbDatabase = System.getenv("TCHALLENGE_MONGODB_DATABASE");
+        MongoClient mongoClient = new MongoClient(mongodbHost, Integer.parseInt(mongodbPort));
+        DATABASE = mongoClient.getDatabase(mongodbDatabase);
     }
 
     private PersistenceManager() {
