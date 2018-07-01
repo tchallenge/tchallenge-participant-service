@@ -1,14 +1,10 @@
 package ru.tchallenge.pilot.service.domain.problem.snippet;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.GenericProjector;
 
-public final class ProblemSnippetProjector extends GenericProjector {
-
-    public static final ProblemSnippetProjector INSTANCE = new ProblemSnippetProjector();
-
-    private ProblemSnippetProjector() {
-
-    }
+@ManagedComponent
+public class ProblemSnippetProjector extends GenericProjector {
 
     public ProblemSnippet problemSnippet(final ProblemSnippetDocument document) {
         return ProblemSnippet.builder()

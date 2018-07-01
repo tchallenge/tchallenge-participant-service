@@ -2,9 +2,11 @@ package ru.tchallenge.pilot.service.domain.account;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-public final class AccountPasswordHashEngine {
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 
-    public static final AccountPasswordHashEngine INSTANCE = new AccountPasswordHashEngine();
+@ManagedComponent
+public class AccountPasswordHashEngine extends GenericApplicationComponent {
 
     public String hash(final String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
@@ -12,9 +14,5 @@ public final class AccountPasswordHashEngine {
 
     public boolean match(final String password, final String passwordHash) {
         return BCrypt.checkpw(password, passwordHash);
-    }
-
-    private AccountPasswordHashEngine() {
-
     }
 }

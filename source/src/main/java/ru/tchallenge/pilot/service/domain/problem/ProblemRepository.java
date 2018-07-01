@@ -8,21 +8,16 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.mongodb.client.model.Aggregates;
-import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.GenericRepository;
 import ru.tchallenge.pilot.service.utility.data.Id;
 
-public final class ProblemRepository extends GenericRepository {
-
-    public static final ProblemRepository INSTANCE = new ProblemRepository();
+@ManagedComponent
+public class ProblemRepository extends GenericRepository {
 
     private static final int MAX_RANDOM_ITERATIONS = 3;
-
-    private ProblemRepository() {
-        super("problems");
-    }
 
     public List<ProblemDocument> findAll() {
         return documents()
@@ -64,5 +59,10 @@ public final class ProblemRepository extends GenericRepository {
                 .into(new ArrayList<>())
                 .stream()
                 .collect(Collectors.toMap(ProblemDocument::getId, p -> p));
+    }
+
+    @Override
+    protected String getCollectionName() {
+        return "problems";
     }
 }

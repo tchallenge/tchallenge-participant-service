@@ -7,41 +7,37 @@ import spark.Response;
 
 import com.google.common.collect.Sets;
 
-import ru.tchallenge.pilot.service.security.token.SecurityToken;
-import ru.tchallenge.pilot.service.security.token.SecurityTokenContext;
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.http.SimpleEndpointSignature;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
-public final class AuthenticationInterceptorBean implements AuthenticationInterceptor {
+@ManagedComponent
+public class AuthenticationInterceptorBean extends GenericApplicationComponent implements AuthenticationInterceptor {
 
-    public static final AuthenticationInterceptorBean INSTANCE = new AuthenticationInterceptorBean();
+    private Collection<SimpleEndpointSignature> authorizationByInvoice;
+    private String authorizationHeaderName;
+    private String authorizationHeaderPrefix;
+    private AuthenticationManager authenticationManager;
 
-    private final Collection<SimpleEndpointSignature> authorizationByInvoice;
-    private final String authorizationHeaderName = "Authorization";
-    private final String authorizationHeaderPrefix = "BEARER ";
-    private final AuthenticationManager authenticationManager = AuthenticationManager.INSTANCE;
-    private final SecurityTokenContext securityTokenContext = SecurityTokenContext.INSTANCE;
-
-    private AuthenticationInterceptorBean() {
-        authorizationByInvoice = Sets.newHashSet(SimpleEndpointSignature.builder().method("POST").uri("/security/tokens/").build());
+    @Override
+    public void init() {
+        super.init();
+        this.authorizationByInvoice = Sets.newHashSet(SimpleEndpointSignature.builder().method("POST").uri("/security/tokens/").build());
+        this.authorizationHeaderName = "Authorization";
+        this.authorizationHeaderPrefix = "BEARER ";
+        this.authenticationManager = getComponent(AuthenticationManager.class);
     }
 
     @Override
     public void after(final Request request, final Response response) {
-        provideNewTokenPayloadIfPossible(response);
+
     }
 
     @Override
     public void before(final Request request, final Response response) {
         final Authentication authentication = createAuthentication(request);
         new AuthenticationRequestContext(request).setAuthentication(authentication);
-    }
-
-    private void provideNewTokenPayloadIfPossible(final Response response) {
-        if (securityTokenContext.isNewTokenCreated()) {
-            final SecurityToken token = securityTokenContext.getCreatedToken();
-            response.header(authorizationHeaderName, authorizationHeaderPrefix + token.getPayload());
-        }
     }
 
     private Authentication createAuthentication(final Request request) {

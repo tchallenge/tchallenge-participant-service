@@ -4,22 +4,29 @@ import spark.Request;
 
 import org.bson.Document;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.security.authentication.AuthenticationRequestContext;
 import ru.tchallenge.pilot.service.utility.data.DocumentWrapper;
 import ru.tchallenge.pilot.service.utility.data.Id;
 
-public final class AccountManager {
+@ManagedComponent
+public class AccountManager extends GenericApplicationComponent {
 
-    public static final AccountManager INSTANCE = new AccountManager();
+    private AccountProjector accountProjector;
+    private AccountPasswordHashEngine accountPasswordHashEngine;
+    private AccountPasswordValidator accountPasswordValidator;
+    private AccountRepository accountRepository;
+    private AccountSystemManager accountSystemManager;
 
-    private final AccountPasswordHashEngine accountPasswordHashEngine = AccountPasswordHashEngine.INSTANCE;
-    private final AccountPasswordValidator accountPasswordValidator = AccountPasswordValidator.INSTANCE;
-    private final AccountProjector accountProjector = AccountProjector.INSTANCE;
-    private final AccountRepository accountRepository = AccountRepository.INSTANCE;
-    private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
-
-    private AccountManager() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.accountProjector = getComponent(AccountProjector.class);
+        this.accountPasswordHashEngine = getComponent(AccountPasswordHashEngine.class);
+        this.accountPasswordValidator = getComponent(AccountPasswordValidator.class);
+        this.accountRepository = getComponent(AccountRepository.class);
+        this.accountSystemManager = getComponent(AccountSystemManager.class);
     }
 
     public Account retrieveCurrent(Request request) {

@@ -4,18 +4,22 @@ import java.util.List;
 
 import spark.Request;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.IdAware;
 import ru.tchallenge.pilot.service.utility.experimental.ExperimentalContext;
 
-public final class ProblemFacade {
+@ManagedComponent
+public class ProblemFacade extends GenericApplicationComponent {
 
-    public static final ProblemFacade INSTANCE = new ProblemFacade();
+    private ExperimentalContext experimentalContext;
+    private ProblemManager problemManager;
 
-    private final ExperimentalContext experimentalContext = ExperimentalContext.INSTANCE;
-    private final ProblemManager problemManager = ProblemManager.INSTANCE;
-
-    private ProblemFacade() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.experimentalContext = getComponent(ExperimentalContext.class);
+        this.problemManager = getComponent(ProblemManager.class);
     }
 
     public IdAware create(Request request, ProblemInvoice invoice) {

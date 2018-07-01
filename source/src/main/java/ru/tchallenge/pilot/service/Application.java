@@ -12,14 +12,17 @@ import static spark.Spark.*;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
+import ru.tchallenge.pilot.service.context.ApplicationContext;
 import ru.tchallenge.pilot.service.domain.account.AccountRouter;
 import ru.tchallenge.pilot.service.domain.event.EventRouter;
+import ru.tchallenge.pilot.service.domain.problem.ProblemRepository;
 import ru.tchallenge.pilot.service.domain.problem.ProblemRouter;
 import ru.tchallenge.pilot.service.domain.specialization.SpecializationRouter;
 import ru.tchallenge.pilot.service.domain.workbook.WorkbookRouter;
 import ru.tchallenge.pilot.service.security.SecurityRouter;
 import ru.tchallenge.pilot.service.security.authentication.AuthenticationInterceptor;
 import ru.tchallenge.pilot.service.security.authentication.AuthenticationInterceptorBean;
+import ru.tchallenge.pilot.service.security.authentication.AuthenticationManager;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
 @Slf4j
@@ -29,17 +32,27 @@ public final class Application implements Runnable {
         new Application().run();
     }
 
-    private final AccountRouter accountRouter = AccountRouter.INSTANCE;
-    private final AuthenticationInterceptor authenticationInterceptor = AuthenticationInterceptorBean.INSTANCE;
-    private final EventRouter eventRouter = EventRouter.INSTANCE;
-    private final ProblemRouter problemRouter = ProblemRouter.INSTANCE;
-    private final SecurityRouter securityRouter = SecurityRouter.INSTANCE;
-    private final SpecializationRouter specializationRouter = SpecializationRouter.INSTANCE;
-    private final WorkbookRouter workbookRouter = WorkbookRouter.INSTANCE;
+    private ApplicationContext context;
+    private AccountRouter accountRouter;
+    private AuthenticationInterceptor authenticationInterceptor;
+    private EventRouter eventRouter;
+    private ProblemRouter problemRouter;
+    private SecurityRouter securityRouter;
+    private SpecializationRouter specializationRouter;
+    private WorkbookRouter workbookRouter;
 
     @Override
     public void run() {
         log.info("Application started...");
+        this.context = new ApplicationContext();
+        this.context.init();
+        this.accountRouter = this.context.getComponent(AccountRouter.class);
+        this.authenticationInterceptor = this.context.getComponent(AuthenticationInterceptorBean.class);
+        this.eventRouter = this.context.getComponent(EventRouter.class);
+        this.problemRouter = this.context.getComponent(ProblemRouter.class);
+        this.securityRouter = this.context.getComponent(SecurityRouter.class);
+        this.specializationRouter = this.context.getComponent(SpecializationRouter.class);
+        this.workbookRouter = this.context.getComponent(WorkbookRouter.class);
         registerErrorHandlers();
         registerInterceptors();
         registerDomainRouters();

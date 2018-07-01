@@ -3,16 +3,19 @@ package ru.tchallenge.pilot.service.security.token;
 import spark.RouteGroup;
 import static spark.Spark.*;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
-public final class SecurityTokenRouter implements RouteGroup {
+@ManagedComponent
+public class SecurityTokenRouter extends GenericApplicationComponent implements RouteGroup {
 
-    public static final SecurityTokenRouter INSTANCE = new SecurityTokenRouter();
+    private TokenFacade tokenFacade;
 
-    private final TokenFacade tokenFacade = TokenFacade.INSTANCE;
-
-    private SecurityTokenRouter() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.tokenFacade = getComponent(TokenFacade.class);
     }
 
     @Override

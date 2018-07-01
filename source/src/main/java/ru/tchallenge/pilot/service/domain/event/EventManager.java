@@ -7,19 +7,23 @@ import spark.Request;
 
 import com.google.common.collect.ImmutableList;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.security.authentication.Authentication;
 import ru.tchallenge.pilot.service.security.authentication.AuthenticationRequestContext;
 import ru.tchallenge.pilot.service.utility.data.Id;
 
-public final class EventManager {
+@ManagedComponent
+public class EventManager extends GenericApplicationComponent {
 
-    public static final EventManager INSTANCE = new EventManager();
+    private EventRepository eventRepository;
+    private EventProjector eventProjector;
 
-    private final EventProjector eventProjector = EventProjector.INSTANCE;
-    private final EventRepository eventRepository = EventRepository.INSTANCE;
-
-    private EventManager() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.eventProjector = getComponent(EventProjector.class);
+        this.eventRepository = getComponent(EventRepository.class);
     }
 
     public Event retrieveById(Request request, Id id) {

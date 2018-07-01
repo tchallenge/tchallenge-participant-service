@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.bson.Document;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.problem.ProblemDocument;
 import ru.tchallenge.pilot.service.domain.problem.ProblemRepository;
 import ru.tchallenge.pilot.service.domain.workbook.assignment.Assignment;
@@ -15,15 +16,17 @@ import ru.tchallenge.pilot.service.domain.workbook.assignment.AssignmentProjecto
 import ru.tchallenge.pilot.service.utility.data.GenericProjector;
 import ru.tchallenge.pilot.service.utility.data.Id;
 
-public final class WorkbookProjector extends GenericProjector {
+@ManagedComponent
+public class WorkbookProjector extends GenericProjector {
 
-    public static final WorkbookProjector INSTANCE = new WorkbookProjector();
+    private AssignmentProjector assignmentProjector;
+    private ProblemRepository problemRepository;
 
-    private final AssignmentProjector assignmentProjector = AssignmentProjector.INSTANCE;
-    private final ProblemRepository problemRepository = ProblemRepository.INSTANCE;
-
-    private WorkbookProjector() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.assignmentProjector = getComponent(AssignmentProjector.class);
+        this.problemRepository = getComponent(ProblemRepository.class);
     }
 
     public Workbook workbook(final WorkbookDocument document) {

@@ -5,13 +5,28 @@ import java.time.Instant;
 
 import org.bson.Document;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.DocumentWrapper;
 import ru.tchallenge.pilot.service.utility.data.Id;
 import ru.tchallenge.pilot.service.utility.data.IdAware;
 
-public final class AccountSystemManager {
+@ManagedComponent
+public class AccountSystemManager extends GenericApplicationComponent {
 
-    public static final AccountSystemManager INSTANCE = new AccountSystemManager();
+    private AccountProjector accountProjector;
+    private AccountPasswordHashEngine accountPasswordHashEngine;
+    private AccountPasswordValidator accountPasswordValidator;
+    private AccountRepository accountRepository;
+
+    @Override
+    public void init() {
+        super.init();
+        this.accountProjector = getComponent(AccountProjector.class);
+        this.accountPasswordHashEngine = getComponent(AccountPasswordHashEngine.class);
+        this.accountPasswordValidator = getComponent(AccountPasswordValidator.class);
+        this.accountRepository = getComponent(AccountRepository.class);
+    }
 
     public IdAware create(final AccountInvoice invoice) {
         accountPasswordValidator.validate(invoice.getPassword());
@@ -68,14 +83,5 @@ public final class AccountSystemManager {
             result.put("website", accountPersonality.getWebsite());
         }
         return result;
-    }
-
-    private final AccountProjector accountProjector = AccountProjector.INSTANCE;
-    private final AccountPasswordHashEngine accountPasswordHashEngine = AccountPasswordHashEngine.INSTANCE;
-    private final AccountPasswordValidator accountPasswordValidator = AccountPasswordValidator.INSTANCE;
-    private final AccountRepository accountRepository = AccountRepository.INSTANCE;
-
-    private AccountSystemManager() {
-
     }
 }

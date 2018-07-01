@@ -6,21 +6,25 @@ import java.util.stream.Collectors;
 
 import spark.Request;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.problem.option.ProblemOptionDocument;
 import ru.tchallenge.pilot.service.domain.problem.option.ProblemOptionInvoice;
 import ru.tchallenge.pilot.service.domain.problem.snippet.ProblemSnippetDocument;
 import ru.tchallenge.pilot.service.domain.problem.snippet.ProblemSnippetInvoice;
 import ru.tchallenge.pilot.service.utility.data.IdAware;
 
-public final class ProblemManager {
+@ManagedComponent
+public class ProblemManager extends GenericApplicationComponent {
 
-    public static final ProblemManager INSTANCE = new ProblemManager();
+    private ProblemProjector problemProjector;
+    private ProblemRepository problemRepository;
 
-    private final ProblemProjector problemProjector = ProblemProjector.INSTANCE;
-    private final ProblemRepository problemRepository = ProblemRepository.INSTANCE;
-
-    private ProblemManager() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.problemProjector = getComponent(ProblemProjector.class);
+        this.problemRepository = getComponent(ProblemRepository.class);
     }
 
     public IdAware create(Request request, ProblemInvoice invoice) {

@@ -5,12 +5,21 @@ import java.util.stream.Collectors;
 
 import spark.Request;
 
-public final class SpecializationManager {
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 
-    public static final SpecializationManager INSTANCE = new SpecializationManager();
+@ManagedComponent
+public class SpecializationManager extends GenericApplicationComponent {
 
-    private final SpecializationProjector specializationProjector = SpecializationProjector.INSTANCE;
-    private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
+    private SpecializationProjector specializationProjector;
+    private SpecializationRepository specializationRepository;
+
+    @Override
+    public void init() {
+        super.init();
+        this.specializationProjector = getComponent(SpecializationProjector.class);
+        this.specializationRepository = getComponent(SpecializationRepository.class);
+    }
 
     public List<Specialization> retrieveByAll(Request request) {
         return specializationRepository
@@ -18,9 +27,5 @@ public final class SpecializationManager {
                 .stream()
                 .map(specializationProjector::specialization)
                 .collect(Collectors.toList());
-    }
-
-    private SpecializationManager() {
-
     }
 }

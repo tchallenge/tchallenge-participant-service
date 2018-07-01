@@ -1,14 +1,10 @@
 package ru.tchallenge.pilot.service.domain.event;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.GenericProjector;
 
-public final class EventProjector extends GenericProjector {
-
-    public static final EventProjector INSTANCE = new EventProjector();
-
-    private EventProjector() {
-
-    }
+@ManagedComponent
+public class EventProjector extends GenericProjector {
 
     public Event event(final EventDocument document) {
         return Event.builder()

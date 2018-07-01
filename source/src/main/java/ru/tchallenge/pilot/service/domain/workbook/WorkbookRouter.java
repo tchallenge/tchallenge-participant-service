@@ -1,5 +1,7 @@
 package ru.tchallenge.pilot.service.domain.workbook;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.workbook.assignment.AssignmentUpdateInvoice;
 import ru.tchallenge.pilot.service.utility.data.Id;
 import ru.tchallenge.pilot.service.utility.data.IdAware;
@@ -9,14 +11,15 @@ import spark.RouteGroup;
 
 import static spark.Spark.*;
 
-public final class WorkbookRouter implements RouteGroup {
+@ManagedComponent
+public class WorkbookRouter extends GenericApplicationComponent implements RouteGroup {
 
-    public static WorkbookRouter INSTANCE = new WorkbookRouter();
+    private WorkbookManager workbookManager;
 
-    private final WorkbookManager workbookManager = WorkbookManager.INSTANCE;
-
-    private WorkbookRouter() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.workbookManager = getComponent(WorkbookManager.class);
     }
 
     @Override

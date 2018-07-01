@@ -3,15 +3,12 @@ package ru.tchallenge.pilot.service.utility.data;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 
-import ru.tchallenge.pilot.service.PersistenceManager;
+import ru.tchallenge.pilot.service.configuration.PersistenceConfiguration;
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
 
-public abstract class GenericRepository {
+public abstract class GenericRepository extends GenericApplicationComponent {
 
-    private final MongoCollection<Document> documents;
-
-    public GenericRepository(final String collectionName) {
-        this.documents = PersistenceManager.getDocumentCollection(collectionName);
-    }
+    private MongoCollection<Document> documents;
 
     public long count() {
         return this.documents.count();
@@ -37,7 +34,16 @@ public abstract class GenericRepository {
         documentWrapper.replaceWithin(documents);
     }
 
+    @Override
+    public void init() {
+        super.init();
+        PersistenceConfiguration persistenceConfiguration = getComponent(PersistenceConfiguration.class);
+        this.documents = persistenceConfiguration.getDocumentCollection(getCollectionName());
+    }
+
     protected MongoCollection<Document> documents() {
         return documents;
     }
+
+    protected abstract String getCollectionName();
 }

@@ -12,6 +12,8 @@ import spark.Request;
 
 import com.google.common.collect.Sets;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.maturity.Maturity;
 import ru.tchallenge.pilot.service.domain.problem.ProblemCategory;
 import ru.tchallenge.pilot.service.domain.problem.ProblemDifficulty;
@@ -29,17 +31,23 @@ import ru.tchallenge.pilot.service.utility.data.IdAware;
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailInvoice;
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailManager;
 
-public final class WorkbookManager {
+@ManagedComponent
+public class WorkbookManager extends GenericApplicationComponent {
 
-    public static WorkbookManager INSTANCE = new WorkbookManager();
+    private SpecializationRepository specializationRepository;
+    private ProblemRepository problemRepository;
+    private WorkbookProjector workbookProjector;
+    private WorkbookRepository workbookRepository;
+    private TemplateMailManager templateMailManager;
 
-    private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
-    private final ProblemRepository problemRepository = ProblemRepository.INSTANCE;
-    private final WorkbookProjector workbookProjector = WorkbookProjector.INSTANCE;
-    private final WorkbookRepository workbookRepository = WorkbookRepository.INSTANCE;
-
-    private WorkbookManager() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.specializationRepository = getComponent(SpecializationRepository.class);
+        this.problemRepository = getComponent(ProblemRepository.class);
+        this.workbookProjector = getComponent(WorkbookProjector.class);
+        this.workbookRepository = getComponent(WorkbookRepository.class);
+        this.templateMailManager = getComponent(TemplateMailManager.class);
     }
 
     public IdAware create(Request request, WorkbookInvoice invoice) {
@@ -222,8 +230,6 @@ public final class WorkbookManager {
     private String authenticatedAccountId(Request request) {
         return new AuthenticationRequestContext(request).getAuthentication().getAccountId();
     }
-
-    private final TemplateMailManager templateMailManager = TemplateMailManager.INSTANCE;
 
     private void send(final IdAware idAware) {
         final String backlink = createBacklink(idAware);

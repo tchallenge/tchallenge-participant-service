@@ -7,17 +7,20 @@ import com.google.common.collect.Sets;
 import static spark.Spark.get;
 import static spark.Spark.path;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.Id;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
-public final class EventRouter implements RouteGroup {
+@ManagedComponent
+public class EventRouter extends GenericApplicationComponent implements RouteGroup {
 
-    public static final EventRouter INSTANCE = new EventRouter();
+    private EventManager eventManager;
 
-    private final EventManager eventManager = EventManager.INSTANCE;
-
-    private EventRouter() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.eventManager = getComponent(EventManager.class);
     }
 
     @Override

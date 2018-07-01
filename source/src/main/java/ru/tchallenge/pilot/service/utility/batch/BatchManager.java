@@ -5,28 +5,32 @@ import java.util.concurrent.Executors;
 
 import lombok.extern.slf4j.Slf4j;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
+
 @Slf4j
-public final class BatchManager {
+@ManagedComponent
+public class BatchManager extends GenericApplicationComponent {
 
-    public static final BatchManager INSTANCE = new BatchManager();
+    private ExecutorService executorService;
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(3);
-
-    private BatchManager() {
-
-    }
-
-    public void submit(final BatchRunnable runnable) {
-        executorService.submit(() -> {
+    public void submit(BatchRunnable runnable) {
+        this.executorService.submit(() -> {
             try {
                 runnable.run();
-            } catch (final Exception exception) {
+            } catch (Exception exception) {
                 handleBatchException(exception);
             }
         });
     }
 
-    private void handleBatchException(final Exception exception) {
+    @Override
+    public void init() {
+        super.init();
+        this.executorService = Executors.newFixedThreadPool(3);
+    }
+
+    private void handleBatchException(Exception exception) {
         log.error("Batch operation failure", exception);
     }
 }

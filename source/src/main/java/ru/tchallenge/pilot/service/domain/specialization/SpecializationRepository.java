@@ -5,15 +5,11 @@ import java.util.List;
 
 import static com.mongodb.client.model.Filters.in;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.GenericRepository;
 
-public final class SpecializationRepository extends GenericRepository {
-
-    public static final SpecializationRepository INSTANCE = new SpecializationRepository();
-
-    private SpecializationRepository() {
-        super("specializations");
-    }
+@ManagedComponent
+public class SpecializationRepository extends GenericRepository {
 
     public List<SpecializationDocument> findAll() {
         return documents()
@@ -28,5 +24,10 @@ public final class SpecializationRepository extends GenericRepository {
                 .filter(in("permalink", permalinks))
                 .map(SpecializationDocument::new)
                 .into(new ArrayList<>());
+    }
+
+    @Override
+    protected String getCollectionName() {
+        return "specializations";
     }
 }

@@ -1,17 +1,19 @@
 package ru.tchallenge.pilot.service.domain.workbook.assignment;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.problem.ProblemDocument;
 import ru.tchallenge.pilot.service.domain.problem.ProblemProjector;
 import ru.tchallenge.pilot.service.utility.data.GenericProjector;
 
-public final class AssignmentProjector extends GenericProjector {
+@ManagedComponent
+public class AssignmentProjector extends GenericProjector {
 
-    public static final AssignmentProjector INSTANCE = new AssignmentProjector();
+    private ProblemProjector problemProjector;
 
-    private final ProblemProjector problemProjector = ProblemProjector.INSTANCE;
-
-    private AssignmentProjector() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.problemProjector = getComponent(ProblemProjector.class);
     }
 
     public Assignment assignment(final AssignmentDocument assignmentDocument,

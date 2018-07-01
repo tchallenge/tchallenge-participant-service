@@ -5,16 +5,19 @@ import spark.RouteGroup;
 import static spark.Spark.get;
 import static spark.Spark.path;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
-public final class SpecializationRouter implements RouteGroup {
+@ManagedComponent
+public class SpecializationRouter extends GenericApplicationComponent implements RouteGroup {
 
-    public static SpecializationRouter INSTANCE = new SpecializationRouter();
+    private SpecializationManager specializationManager;
 
-    private final SpecializationManager specializationManager = SpecializationManager.INSTANCE;
-
-    private SpecializationRouter() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.specializationManager = getComponent(SpecializationManager.class);
     }
 
     @Override

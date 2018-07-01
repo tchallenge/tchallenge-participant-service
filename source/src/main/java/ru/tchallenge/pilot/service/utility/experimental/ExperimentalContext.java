@@ -1,8 +1,10 @@
 package ru.tchallenge.pilot.service.utility.experimental;
 
-public final class ExperimentalContext {
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedConfiguration;
 
-    public static final ExperimentalContext INSTANCE = new ExperimentalContext();
+@ManagedConfiguration
+public class ExperimentalContext extends GenericApplicationComponent {
 
     private static final String VARIABLE_NAME = "TCHALLENGE_EXPERIMENTAL_FEATURES_ENABLED";
 
@@ -11,11 +13,7 @@ public final class ExperimentalContext {
         return value != null && Boolean.parseBoolean(value);
     }
 
-    private final boolean experimentalFeaturesEnabled;
-
-    private ExperimentalContext() {
-        this.experimentalFeaturesEnabled = environmentVariableAsBoolean(VARIABLE_NAME);
-    }
+    private boolean experimentalFeaturesEnabled;
 
     public boolean isExperimentalFeaturesEnabled() {
         return experimentalFeaturesEnabled;
@@ -25,5 +23,11 @@ public final class ExperimentalContext {
         if (!experimentalFeaturesEnabled) {
             throw new RuntimeException("Experimental features are disabled");
         }
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        this.experimentalFeaturesEnabled = environmentVariableAsBoolean(VARIABLE_NAME);
     }
 }

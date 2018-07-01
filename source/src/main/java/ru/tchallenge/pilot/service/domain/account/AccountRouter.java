@@ -3,16 +3,19 @@ package ru.tchallenge.pilot.service.domain.account;
 import spark.RouteGroup;
 import static spark.Spark.*;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
-public final class AccountRouter implements RouteGroup {
+@ManagedComponent
+public class AccountRouter extends GenericApplicationComponent implements RouteGroup {
 
-    public static final AccountRouter INSTANCE = new AccountRouter();
+    private AccountManager accountManager;
 
-    private final AccountManager accountManager = AccountManager.INSTANCE;
-
-    private AccountRouter() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.accountManager = getComponent(AccountManager.class);
     }
 
     @Override

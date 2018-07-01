@@ -2,18 +2,21 @@ package ru.tchallenge.pilot.service.security.registration;
 
 import java.util.UUID;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.account.AccountInvoice;
 import ru.tchallenge.pilot.service.domain.account.AccountPersonality;
 import ru.tchallenge.pilot.service.domain.account.AccountSystemManager;
 
-public final class SecurityRegistrationManager {
+@ManagedComponent
+public class SecurityRegistrationManager extends GenericApplicationComponent {
 
-    public static final SecurityRegistrationManager INSTANCE = new SecurityRegistrationManager();
+    private AccountSystemManager accountSystemManager;
 
-    private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
-
-    private SecurityRegistrationManager() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.accountSystemManager = getComponent(AccountSystemManager.class);
     }
 
     public SecurityRegistration create(final SecurityRegistrationInvoice invoice) {

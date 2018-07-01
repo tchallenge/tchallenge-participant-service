@@ -3,17 +3,13 @@ package ru.tchallenge.pilot.service.domain.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.DocumentWrapper;
 import ru.tchallenge.pilot.service.utility.data.GenericRepository;
 import ru.tchallenge.pilot.service.utility.data.Id;
 
-public final class EventRepository extends GenericRepository {
-
-    public static final EventRepository INSTANCE = new EventRepository();
-
-    private EventRepository() {
-        super("events");
-    }
+@ManagedComponent
+public class EventRepository extends GenericRepository {
 
     public List<EventDocument> find(final EventSearchInvoice invoice) {
         return documents()
@@ -32,5 +28,10 @@ public final class EventRepository extends GenericRepository {
             return null;
         }
         return new EventDocument(wrapper.getDocument());
+    }
+
+    @Override
+    protected String getCollectionName() {
+        return "events";
     }
 }

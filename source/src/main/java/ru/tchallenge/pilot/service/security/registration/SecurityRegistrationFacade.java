@@ -5,23 +5,29 @@ import lombok.Data;
 
 import spark.Request;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.security.voucher.SecurityVoucher;
 import ru.tchallenge.pilot.service.security.voucher.SecurityVoucherManager;
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailInvoice;
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailManager;
 import ru.tchallenge.pilot.service.utility.template.TemplateManager;
 
-public final class SecurityRegistrationFacade {
+@ManagedComponent
+public class SecurityRegistrationFacade extends GenericApplicationComponent {
 
-    public static final SecurityRegistrationFacade INSTANCE = new SecurityRegistrationFacade();
+    private SecurityRegistrationManager securityRegistrationManager;
+    private SecurityVoucherManager securityVoucherManager;
+    private TemplateManager templateManager;
+    private TemplateMailManager templateMailManager;
 
-    private final SecurityRegistrationManager securityRegistrationManager = SecurityRegistrationManager.INSTANCE;
-    private final SecurityVoucherManager securityVoucherManager = SecurityVoucherManager.INSTANCE;
-    private final TemplateManager templateManager = TemplateManager.INSTANCE;
-    private final TemplateMailManager templateMailManager = TemplateMailManager.INSTANCE;
-
-    private SecurityRegistrationFacade() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.securityRegistrationManager = getComponent(SecurityRegistrationManager.class);
+        this.securityVoucherManager = getComponent(SecurityVoucherManager.class);
+        this.templateManager = getComponent(TemplateManager.class);
+        this.templateMailManager = getComponent(TemplateMailManager.class);
     }
 
     public SecurityRegistration createAndSendVoucher(Request request, SecurityRegistrationInvoice invoice) {

@@ -2,12 +2,12 @@ package ru.tchallenge.pilot.service.domain.account;
 
 import org.bson.Document;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.DocumentWrapper;
 import ru.tchallenge.pilot.service.utility.data.GenericProjector;
 
-public final class AccountProjector extends GenericProjector {
-
-    public static final AccountProjector INSTANCE = new AccountProjector();
+@ManagedComponent
+public class AccountProjector extends GenericProjector {
 
     public Account intoAccount(final Document document) {
         return Account.builder()
@@ -43,9 +43,5 @@ public final class AccountProjector extends GenericProjector {
                 .bitbucket(document.getString("bitbucket"))
                 .website(document.getString("website"))
                 .build();
-    }
-
-    private AccountProjector() {
-
     }
 }

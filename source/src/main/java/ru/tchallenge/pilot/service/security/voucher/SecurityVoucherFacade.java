@@ -5,21 +5,18 @@ import lombok.Data;
 
 import spark.Request;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailInvoice;
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailManager;
 import ru.tchallenge.pilot.service.utility.template.TemplateManager;
 
-public final class SecurityVoucherFacade {
+@ManagedComponent
+public class SecurityVoucherFacade extends GenericApplicationComponent {
 
-    public static final SecurityVoucherFacade INSTANCE = new SecurityVoucherFacade();
-
-    private final SecurityVoucherManager securityVoucherManager = SecurityVoucherManager.INSTANCE;
-    private final TemplateManager templateManager = TemplateManager.INSTANCE;
-    private final TemplateMailManager templateMailManager = TemplateMailManager.INSTANCE;
-
-    private SecurityVoucherFacade() {
-
-    }
+    private SecurityVoucherManager securityVoucherManager;
+    private TemplateManager templateManager;
+    private TemplateMailManager templateMailManager;
 
     public SecurityVoucher createAndSend(Request request, SecurityVoucherInvoice invoice) {
         final SecurityVoucher voucher = securityVoucherManager.create(invoice.getEmail());
@@ -32,6 +29,14 @@ public final class SecurityVoucherFacade {
                 .build();
         templateMailManager.sendAsync(templateMailInvoice);
         return voucher;
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        this.securityVoucherManager = getComponent(SecurityVoucherManager.class);
+        this.templateManager = getComponent(TemplateManager.class);
+        this.templateMailManager = getComponent(TemplateMailManager.class);
     }
 
     private String createBacklink(final SecurityVoucherInvoice invoice, final SecurityVoucher voucher) {

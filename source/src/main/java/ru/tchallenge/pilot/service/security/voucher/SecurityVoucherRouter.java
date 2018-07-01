@@ -4,17 +4,14 @@ import spark.RouteGroup;
 import static spark.Spark.path;
 import static spark.Spark.post;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
-public final class SecurityVoucherRouter implements RouteGroup {
+@ManagedComponent
+public class SecurityVoucherRouter extends GenericApplicationComponent implements RouteGroup {
 
-    public static final SecurityVoucherRouter INSTANCE = new SecurityVoucherRouter();
-
-    private final SecurityVoucherFacade securityVoucherFacade = SecurityVoucherFacade.INSTANCE;
-
-    private SecurityVoucherRouter() {
-
-    }
+    private SecurityVoucherFacade securityVoucherFacade;
 
     @Override
     public void addRoutes() {
@@ -25,5 +22,11 @@ public final class SecurityVoucherRouter implements RouteGroup {
                 return Json.json(voucher.getId(), response);
             });
         });
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        this.securityVoucherFacade = getComponent(SecurityVoucherFacade.class);
     }
 }

@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public final class SecurityVoucherManager {
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 
-    public static final SecurityVoucherManager INSTANCE = new SecurityVoucherManager();
+@ManagedComponent
+public class SecurityVoucherManager extends GenericApplicationComponent {
 
-    private final Map<String, SecurityVoucher> vouchers = new HashMap<>();
-
-    private SecurityVoucherManager() {
-
-    }
+    private Map<String, SecurityVoucher> vouchers = new HashMap<>();
 
     public SecurityVoucher create(final String email) {
         final SecurityVoucher voucher = SecurityVoucher.builder()

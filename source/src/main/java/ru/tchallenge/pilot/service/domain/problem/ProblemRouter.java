@@ -5,17 +5,20 @@ import java.util.List;
 import spark.RouteGroup;
 import static spark.Spark.*;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.IdAware;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
-public final class ProblemRouter implements RouteGroup {
+@ManagedComponent
+public class ProblemRouter extends GenericApplicationComponent implements RouteGroup {
 
-    public static ProblemRouter INSTANCE = new ProblemRouter();
+    private ProblemFacade problemFacade;
 
-    private final ProblemFacade problemFacade = ProblemFacade.INSTANCE;
-
-    private ProblemRouter() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.problemFacade = getComponent(ProblemFacade.class);
     }
 
     @Override

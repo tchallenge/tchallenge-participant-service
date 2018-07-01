@@ -1,14 +1,10 @@
 package ru.tchallenge.pilot.service.domain.problem.option;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.GenericProjector;
 
-public final class ProblemOptionProjector extends GenericProjector {
-
-    public static final ProblemOptionProjector INSTANCE = new ProblemOptionProjector();
-
-    private ProblemOptionProjector() {
-
-    }
+@ManagedComponent
+public class ProblemOptionProjector extends GenericProjector {
 
     public ProblemOption problemOption(final ProblemOptionDocument document,
                                        final boolean classified,

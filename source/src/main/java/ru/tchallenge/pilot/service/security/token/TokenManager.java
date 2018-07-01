@@ -6,26 +6,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.account.Account;
 import ru.tchallenge.pilot.service.domain.account.AccountSystemManager;
 
-public final class TokenManager {
+@ManagedComponent
+public class TokenManager extends GenericApplicationComponent {
 
-    public static final TokenManager INSTANCE = new TokenManager();
+    private AccountSystemManager accountSystemManager;
+    private Map<String, SecurityToken> tokens;
+    private Duration tokenExpirationPeriod;
 
-    private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
-    private final SecurityTokenContext securityTokenContext = SecurityTokenContext.INSTANCE;
-    private final Map<String, SecurityToken> tokens = new HashMap<>();
-    private final Duration tokenExpirationPeriod = Duration.ofHours(1);
-
-    private TokenManager() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.accountSystemManager = getComponent(AccountSystemManager.class);
+        this.tokens = new HashMap<>();
+        this.tokenExpirationPeriod = Duration.ofHours(1);
     }
 
     public SecurityToken create(final String accountId) {
         final SecurityToken token = createNewToken(accountId);
         tokens.put(token.getPayload(), token);
-        securityTokenContext.setCreatedToken(token);
         return token;
     }
 

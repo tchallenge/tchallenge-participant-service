@@ -4,16 +4,19 @@ import spark.RouteGroup;
 import static spark.Spark.path;
 import static spark.Spark.post;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.serialization.Json;
 
-public final class SecurityRegistrationRouter implements RouteGroup {
+@ManagedComponent
+public class SecurityRegistrationRouter extends GenericApplicationComponent implements RouteGroup {
 
-    public static final SecurityRegistrationRouter INSTANCE = new SecurityRegistrationRouter();
+    private SecurityRegistrationFacade securityRegistrationFacade;
 
-    private final SecurityRegistrationFacade securityRegistrationFacade = SecurityRegistrationFacade.INSTANCE;
-
-    private SecurityRegistrationRouter() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.securityRegistrationFacade = getComponent(SecurityRegistrationFacade.class);
     }
 
     @Override

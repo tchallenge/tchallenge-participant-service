@@ -1,14 +1,10 @@
 package ru.tchallenge.pilot.service.domain.problem.image;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.GenericProjector;
 
-public final class ProblemImageProjector extends GenericProjector {
-
-    public static final ProblemImageProjector INSTANCE = new ProblemImageProjector();
-
-    private ProblemImageProjector() {
-
-    }
+@ManagedComponent
+public class ProblemImageProjector extends GenericProjector {
 
     public ProblemImage problemImage(final ProblemImageDocument document) {
         return ProblemImage.builder()

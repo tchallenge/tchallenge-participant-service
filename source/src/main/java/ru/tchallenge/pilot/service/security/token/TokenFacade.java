@@ -2,16 +2,19 @@ package ru.tchallenge.pilot.service.security.token;
 
 import spark.Request;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.security.authentication.AuthenticationRequestContext;
 
-public final class TokenFacade {
+@ManagedComponent
+public class TokenFacade extends GenericApplicationComponent {
 
-    public static final TokenFacade INSTANCE = new TokenFacade();
+    private TokenManager tokenManager;
 
-    private final TokenManager tokenManager = TokenManager.INSTANCE;
-
-    private TokenFacade() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.tokenManager = getComponent(TokenManager.class);
     }
 
     public SecurityToken createForCurrentAccount(Request request) {

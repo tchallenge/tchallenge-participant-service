@@ -5,6 +5,8 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import org.bson.Document;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.account.Account;
 import ru.tchallenge.pilot.service.domain.account.AccountPasswordHashEngine;
 import ru.tchallenge.pilot.service.domain.account.AccountRepository;
@@ -14,16 +16,26 @@ import ru.tchallenge.pilot.service.security.token.TokenManager;
 import ru.tchallenge.pilot.service.security.voucher.SecurityVoucher;
 import ru.tchallenge.pilot.service.security.voucher.SecurityVoucherManager;
 
-public final class AuthenticationManager {
+@ManagedComponent
+public class AuthenticationManager extends GenericApplicationComponent {
 
-    public static final AuthenticationManager INSTANCE = new AuthenticationManager();
+    private AccountPasswordHashEngine accountPasswordHashEngine;
+    private AccountRepository accountRepository;
+    private AccountSystemManager accountSystemManager;
+    private Set<String> illegalStatuses;
+    private SecurityVoucherManager securityVoucherManager;
+    private TokenManager tokenManager;
 
-    private final AccountPasswordHashEngine accountPasswordHashEngine = AccountPasswordHashEngine.INSTANCE;
-    private final AccountRepository accountRepository = AccountRepository.INSTANCE;
-    private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
-    private final Set<String> illegalStatuses = Sets.newHashSet("SUSPENDED", "BANNED", "DELETED");
-    private final SecurityVoucherManager securityVoucherManager = SecurityVoucherManager.INSTANCE;
-    private final TokenManager tokenManager = TokenManager.INSTANCE;
+    @Override
+    public void init() {
+        super.init();
+        this.accountPasswordHashEngine = getComponent(AccountPasswordHashEngine.class);
+        this.accountRepository = getComponent(AccountRepository.class);
+        this.accountSystemManager = getComponent(AccountSystemManager.class);
+        this.securityVoucherManager = getComponent(SecurityVoucherManager.class);
+        this.illegalStatuses = Sets.newHashSet("SUSPENDED", "BANNED", "DELETED");
+        this.tokenManager = getComponent(TokenManager.class);
+    }
 
     public Authentication authenticateByPassword(final AuthenticationInvoice invoice) {
         final String email = invoice.getEmail();

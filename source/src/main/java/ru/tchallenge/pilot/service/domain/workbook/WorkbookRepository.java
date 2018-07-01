@@ -1,12 +1,13 @@
 package ru.tchallenge.pilot.service.domain.workbook;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.utility.data.GenericRepository;
 
-public final class WorkbookRepository extends GenericRepository {
+@ManagedComponent
+public class WorkbookRepository extends GenericRepository {
 
-    public static final WorkbookRepository INSTANCE = new WorkbookRepository();
-
-    private WorkbookRepository() {
-        super("workbooks");
+    @Override
+    protected String getCollectionName() {
+        return "workbooks";
     }
 }

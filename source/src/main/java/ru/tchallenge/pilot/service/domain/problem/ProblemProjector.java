@@ -3,6 +3,7 @@ package ru.tchallenge.pilot.service.domain.problem;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ru.tchallenge.pilot.service.context.ManagedComponent;
 import ru.tchallenge.pilot.service.domain.problem.image.ProblemImage;
 import ru.tchallenge.pilot.service.domain.problem.image.ProblemImageDocument;
 import ru.tchallenge.pilot.service.domain.problem.image.ProblemImageProjector;
@@ -14,16 +15,19 @@ import ru.tchallenge.pilot.service.domain.problem.snippet.ProblemSnippetDocument
 import ru.tchallenge.pilot.service.domain.problem.snippet.ProblemSnippetProjector;
 import ru.tchallenge.pilot.service.utility.data.GenericProjector;
 
-public final class ProblemProjector extends GenericProjector {
+@ManagedComponent
+public class ProblemProjector extends GenericProjector {
 
-    public static final ProblemProjector INSTANCE = new ProblemProjector();
+    private ProblemImageProjector imageProjector;
+    private ProblemOptionProjector optionProjector;
+    private ProblemSnippetProjector snippetProjector;
 
-    private final ProblemImageProjector imageProjector = ProblemImageProjector.INSTANCE;
-    private final ProblemOptionProjector optionProjector = ProblemOptionProjector.INSTANCE;
-    private final ProblemSnippetProjector snippetProjector = ProblemSnippetProjector.INSTANCE;
-
-    private ProblemProjector() {
-
+    @Override
+    public void init() {
+        super.init();
+        this.imageProjector = getComponent(ProblemImageProjector.class);
+        this.optionProjector = getComponent(ProblemOptionProjector.class);
+        this.snippetProjector = getComponent(ProblemSnippetProjector.class);
     }
 
     public Problem problem(final ProblemDocument document, final boolean classified) {

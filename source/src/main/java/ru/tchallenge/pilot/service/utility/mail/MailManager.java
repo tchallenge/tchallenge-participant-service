@@ -16,24 +16,18 @@ import org.apache.http.HttpHost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
+import ru.tchallenge.pilot.service.context.GenericApplicationComponent;
+import ru.tchallenge.pilot.service.context.ManagedComponent;
+
 @Slf4j
-public final class MailManager {
+@ManagedComponent
+public class MailManager extends GenericApplicationComponent {
 
-    public static MailManager INSTANCE = new MailManager();
-
-    private final String mime;
-    private final String origin;
-    private final SendGrid sendgrid;
-    private final boolean sendgridEnabled;
-    private final Session session;
-
-    {
-        this.mime = "text/html";
-        this.origin = "info@t-challenge.ru";
-        this.sendgridEnabled = sendgridEnabled();
-        this.sendgrid = this.sendgridEnabled ? sendgrid() : null;
-        this.session = this.sendgridEnabled ? null : session();
-    }
+    private String mime;
+    private String origin;
+    private SendGrid sendgrid;
+    private boolean sendgridEnabled;
+    private Session session;
 
     public void send(final MailInvoice invoice) {
         if (this.sendgridEnabled) {
@@ -84,6 +78,16 @@ public final class MailManager {
         final Email to = new Email(invoice.getEmail());
         final Content content = new Content(mime, invoice.getContent());
         return new Mail(from, subject, to, content);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        this.mime = "text/html";
+        this.origin = "info@t-challenge.ru";
+        this.sendgridEnabled = sendgridEnabled();
+        this.sendgrid = this.sendgridEnabled ? sendgrid() : null;
+        this.session = this.sendgridEnabled ? null : session();
     }
 
     private SendGrid sendgrid() {
