@@ -30,7 +30,8 @@ public final class TokenManager {
     }
 
     public SecurityToken retrieveByPayload(final String payload) {
-        if (payload.equals("PREDEFINED")) {
+        String predefinedTokenEnabled = System.getenv("TCHALLENGE_SECURITY_TOKEN_PREDEFINED_ENABLED");
+        if (predefinedTokenEnabled.equalsIgnoreCase("true") && payload.equals("PREDEFINED")) {
             final Account account = accountSystemManager.findByEmail("test.user1@example.com");
             if (account == null) {
                 throw new UnsupportedOperationException("No predefined account");
