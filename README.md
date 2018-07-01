@@ -1,2 +1,2 @@
-# T-Challenge: Participant Service
-Web service for T-Challenge participant clients
+# T-Challenge Pilot: Service
+Web service for T-Challenge Pilot clients
