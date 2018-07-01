@@ -1,0 +1,1022 @@
+openapi: "3.0.0"
+
+info:
+  title: T-Challenge Participant Service
+  version: 1.0.0-SNAPSHOT
+
+servers:
+
+  - url: https://service.participant.t-challenge.ru
+    description: The latest major version of the production environment
+
+  - url: https://{majorVersion}.service.participant.t-challenge.ru
+    description: A specific major version of the production environment
+    variables:
+      majorVersion:
+        description: The major version
+        default: v1
+
+  - url: https://{stage}.service.participant.t-challenge.ru
+    description: The latest version of a specific staging environment
+    variables:
+      stage:
+        description: The stage
+        enum:
+          - prod
+          - demo
+          - test
+          - dev
+        default: dev
+
+  - url: https://{stage}-{version}.service.participant.t-challenge.ru
+    description: A specific version of a specific staging environment
+    variables:
+      stage:
+        description: The stage
+        enum:
+          - prod
+          - demo
+          - test
+          - dev
+        default: dev
+      version:
+        description: The version
+        default: v1-0-0-SNAPSHOT
+
+tags:
+
+  - name: accounts
+    description: Retrival and editing of personal accounts
+
+  - name: assignments
+    description: Updating of assignment solutions
+
+  - name: events
+    description: Retrieval of existing events
+
+  - name: security
+    description: All security-related operations; most probably will be moved ot to a dedicated authentication service in later versions
+
+  - name: workbooks
+    description: Creation, retrieval and updating of personal workbooks
+
+security:
+  - TokenAuthentication: []
+
+paths:
+
+  /accounts/current:
+
+    get:
+      summary: Retrieves an existing account
+      operationId: getAccount
+      tags:
+        - accounts
+      responses:
+        '200':
+          description: The requested account
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Account'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /accounts/current/password:
+
+    put:
+      summary: Updates the password of an existing account
+      operationId: updateAccountPassword
+      tags:
+        - accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/AccountPasswordUpdateInvoice'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /accounts/current/personality:
+
+    put:
+      summary: Updates the personal information of an existing account
+      operationId: updateAccountPersonality
+      tags:
+        - accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/AccountPersonalityUpdateInvoice'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /accounts/current/status:
+
+    put:
+      summary: Updates the status of an existing account
+      operationId: updateAccountStatus
+      tags:
+        - accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                textcode:
+                  $ref: '#components/schemas/AccountStatusTextcode'
+              required:
+                - textcode
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /assignments/{id}/solution:
+
+    put:
+      summary: Updates the solution of an existing assignment
+      operationId: updateAssignmentSolution
+      tags:
+        - assignments
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/AssignmentSolutionUpdateInvoice'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /events:
+
+    get:
+      summary: Retrieves a search result of existing events
+      operationId: getEventSearchResult
+      tags:
+        - events
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: A search result of existing events
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/EventSearchResult'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /events/{id}:
+
+    get:
+      summary: Retrieves an existing event
+      operationId: getEvent
+      tags:
+        - events
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: The requested event
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Event'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /security/registrations:
+
+    post:
+      summary: Creates a new security registration
+      operationId: createSecurityRegistration
+      tags:
+        - security
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/SecurityRegistrationInvoice'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /security/tokens:
+
+    post:
+      summary: Creates a new security token
+      operationId: createSecurityToken
+      tags:
+        - security
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/SecurityTokenInvoice'
+      responses:
+        '201':
+          description: A new security token is created
+          headers:
+            X-Security-Token:
+              description: The payload of the created security token
+              schema:
+                $ref: '#/components/schemas/SecurityPayload'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdContainer'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /security/tokens/current:
+
+    get:
+      summary: Retrieves a current security token
+      operationId: getSecurityToken
+      tags:
+        - security
+      parameters:
+        - $ref: '#/components/parameters/SecurityTokenHeader'
+      responses:
+        '200':
+          description: The requested security token
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/SecurityToken'
+        default:
+          $ref: '#/components/responses/Error'
+
+    delete:
+      summary: Deletes a current security token
+      operationId: deleteSecurityToken
+      tags:
+        - security
+      parameters:
+        - $ref: '#/components/parameters/SecurityTokenHeader'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /security/vouchers:
+
+    post:
+      summary: Creates a new security voucher
+      operationId: createSecurityVoucher
+      tags:
+        - security
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/SecurityVoucherInvoice'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /workbooks:
+
+    post:
+      summary: Creates a new workbook
+      operationId: createWorkbook
+      tags:
+        - workbooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/WorkbookInvoice'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        default:
+          $ref: '#/components/responses/Error'
+
+    get:
+      summary: Retrieves a search result of existing workbooks
+      operationId: getWorkbookSearchResult
+      tags:
+        - workbooks
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: A search result of existing workbooks
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/WorkbookSearchResult'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /workbooks/{id}:
+
+    get:
+      summary: Retrieves an existing workbook
+      operationId: getWorkbook
+      tags:
+        - workbooks
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: The requested workbook
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Workbook'
+        default:
+          $ref: '#/components/responses/Error'
+
+  /workbooks/{id}/status:
+
+    put:
+      summary: Updates the status of an existing workbook
+      operationId: updateWorkbookStatus
+      tags:
+        - workbooks
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/SecurityTokenHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                textcode:
+                  $ref: '#components/schemas/WorkbookStatusTextcode'
+              required:
+                - textcode
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        default:
+          $ref: '#/components/responses/Error'
+
+components:
+
+  parameters:
+
+    Id:
+      description: The ID of a requested resource
+      name: id
+      in: path
+      required: true
+      schema:
+        $ref: '#components/schemas/Id'
+
+    Limit:
+      description: A limit of items to be included into a search result
+      name: limit
+      in: query
+      schema:
+        $ref: '#components/schemas/NaturalLong'
+
+    Offset:
+      description: An offset for items to be included into a search result
+      name: offset
+      in: query
+      schema:
+        $ref: '#components/schemas/NaturalLong'
+
+    SecurityTokenHeader:
+      description: The payload of a security token to be used
+      name: X-Security-Token
+      in: header
+      required: true
+      schema:
+        $ref: '#components/schemas/SecurityPayload'
+
+  responses:
+
+    Created:
+      description: A new resource is successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdContainer'
+
+    NoContent:
+      description: A successful request without resulting data
+
+    Error:
+      description: A request cannot be fullfiled due to some error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+
+    Caption:
+      # TODO: add type constraints
+      # TODO: add example
+      type: string
+
+    Description:
+      # TODO: add type constraints
+      # TODO: add example
+      type: string
+
+    Email:
+      type: string
+      format: email
+      example: 'ivan.petrov@example.net'
+
+    Id:
+      type: string
+      pattern: '[\-0-9,A-Z,a-z]+'
+      example: '5288919d-ac20-455e-98d6-c9a8bcd0b819'
+
+    Natural:
+      type: integer
+      minimum: 0
+
+    NaturalLong:
+      type: integer
+      format: int64
+      minimum: 0
+
+    Password:
+      type: string
+      pattern: '.+'
+      example: 'password'
+
+    Phone:
+      # TODO: add type constraints
+      # TODO: add example
+      type: string
+
+    Positive:
+      type: integer
+      minimum: 1
+
+    PositiveLong:
+      type: integer
+      format: int64
+      minimum: 1
+
+    SecurityBacklink:
+      # TODO: add type constraints
+      # TODO: add example
+      type: string
+      format: url
+
+    SecurityPayload:
+      type: string
+      pattern: '[\-0-9,A-Z,a-z]+'
+      example: '3fcebe81-78f0-4409-a76d-fd8a5bf4c8d6'
+
+    Text:
+      # TODO: add type constraints
+      # TODO: add example
+      type: string
+
+    Textcode:
+      # TODO: add type constraints
+      # TODO: add example
+      type: string
+
+    Timestamp:
+      type: string
+      format: date-time
+      example: '2018-01-07T23:42:41+00:00'
+
+    Url:
+      # TODO: add type constraints
+      # TODO: add example
+      type: string
+      format: url
+
+
+
+    IdContainer:
+      allOf:
+        - $ref: '#/components/schemas/WithId'
+
+    Nominal:
+      properties:
+        caption:
+          $ref: '#/components/schemas/Caption'
+        description:
+          $ref: '#/components/schemas/Description'
+      required:
+        - caption
+
+    NominalWithTextcode:
+      allOf:
+        - $ref: '#/components/schemas/WithTextcode'
+        - $ref: '#/components/schemas/Nominal'
+
+    SearchResult:
+      properties:
+        total:
+          $ref: '#/components/schemas/NaturalLong'
+      required:
+        - total
+
+    Validity:
+      properties:
+        validFrom:
+          $ref: '#/components/schemas/Timestamp'
+        validUntil:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - validFrom
+        - validUntil
+
+    WithId:
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+      required:
+        - id
+
+    WithTextcode:
+      properties:
+        textcode:
+          $ref: '#/components/schemas/Textcode'
+      required:
+        - textcode
+
+
+
+    SecurityRegistrationInvoice:
+      properties:
+        backlink:
+          $ref: '#/components/schemas/SecurityBacklink'
+        email:
+          $ref: '#/components/schemas/Email'
+        personality:
+          $ref: '#/components/schemas/AccountPersonalityUpdateInvoice'
+      required:
+        - backlink
+        - email
+        - personality
+
+    SecurityToken:
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdAt:
+          $ref: '#/components/schemas/Timestamp'
+        validUntil:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - createdAt
+        - validUntil
+
+    SecurityTokenInvoice:
+      properties:
+        method:
+          type: string
+          enum:
+            - 'PASSWORD'
+            - 'TOKEN'
+            - 'VOUCHER'
+        email:
+          $ref: '#/components/schemas/Email'
+        password:
+          $ref: '#/components/schemas/Password'
+        token:
+          $ref: '#/components/schemas/SecurityPayload'
+        voucher:
+          $ref: '#/components/schemas/SecurityPayload'
+      required:
+        - method
+
+    SecurityVoucherInvoice:
+      properties:
+        backlink:
+          $ref: '#/components/schemas/SecurityBacklink'
+        email:
+          $ref: '#/components/schemas/Email'
+      required:
+        - backlink
+        - email
+
+
+
+    Account:
+      properties:
+        email:
+          $ref: '#/components/schemas/Email'
+        personality:
+          $ref: '#/components/schemas/AccountPersonality'
+        status:
+          $ref: '#/components/schemas/AccountStatus'
+      required:
+        - email
+        - personality
+        - status
+
+    AccountPasswordUpdateInvoice:
+      properties:
+        current:
+          $ref: '#/components/schemas/Password'
+        desired:
+          $ref: '#/components/schemas/Password'
+      required:
+        - current
+        - desired
+
+    AccountPersonality:
+      properties:
+        firstname:
+          $ref: '#/components/schemas/Caption'
+        lastname:
+          $ref: '#/components/schemas/Caption'
+        middlename:
+          $ref: '#/components/schemas/Caption'
+        quickname:
+          $ref: '#/components/schemas/Caption'
+        bio:
+          $ref: '#/components/schemas/Text'
+        code:
+          $ref: '#/components/schemas/Url'
+        webpage:
+          $ref: '#/components/schemas/Url'
+        phone:
+          $ref: '#/components/schemas/Phone'
+
+    AccountPersonalityUpdateInvoice:
+      allOf:
+        - $ref: '#/components/schemas/AccountPersonality'
+
+    AccountStatus:
+      allOf:
+        - $ref: '#/components/schemas/Nominal'
+        - $ref: '#/components/schemas/AccountStatusUpdateInvoice'
+
+    AccountStatusUpdateInvoice:
+      properties:
+        textcode:
+          $ref: '#/components/schemas/AccountStatusTextcode'
+      required:
+        - textcode
+
+    AccountStatusTextcode:
+      type: string
+      enum:
+        - CREATED
+        - APPROVED
+        - SUSPENDED
+        - DELETED
+        - RESTORED
+
+
+
+    AssignmentSolution:
+      allOf:
+        - $ref: '#/components/schemas/AssignmentSolutionUpdateInvoice'
+
+    AssignmentSolutionUpdateInvoice:
+      properties:
+        content:
+          $ref: '#/components/schemas/Text'
+
+
+
+    Event:
+      allOf:
+        - $ref: '#/components/schemas/EventSearchResultItem'
+        - type: object
+          properties:
+            greeting:
+              $ref: '#/components/schemas/Description'
+            maturities:
+              type: array
+              items:
+                $ref: '#/components/schemas/NominalWithTextcode'
+            specializations:
+              type: array
+              items:
+                $ref: '#/components/schemas/NominalWithTextcode'
+          required:
+            - greeting
+            - maturities
+            - specializations
+
+    EventSearchResult:
+      allOf:
+        - $ref: '#/components/schemas/SearchResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/EventSearchResultItem'
+          required:
+            - items
+
+    EventSearchResultItem:
+      allOf:
+        - $ref: '#/components/schemas/WithId'
+        - $ref: '#/components/schemas/WithTextcode'
+        - $ref: '#/components/schemas/Nominal'
+        - $ref: '#/components/schemas/Validity'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/EventStatus'
+          required:
+            - status
+
+    EventStatus:
+      allOf:
+        - $ref: '#/components/schemas/Nominal'
+        - type: object
+          properties:
+            textcode:
+              $ref: '#/components/schemas/EventStatusTextcode'
+          required:
+            - textcode
+
+    EventStatusTextcode:
+      type: string
+      enum:
+        - CREATED
+        - APPROVED
+        - SUSPENDED
+        - DELETED
+
+
+
+    Workbook:
+      # TODO: add the missing properties
+      allOf:
+        - $ref: '#/components/schemas/WorkbookSearchResultItem'
+
+    WorkbookInvoice:
+      # TODO: add the missing properties
+      properties:
+        eventId:
+          $ref: '#/components/schemas/Id'
+      required:
+        - eventId
+
+    WorkbookSearchResult:
+      allOf:
+        - $ref: '#/components/schemas/SearchResult'
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkbookSearchResultItem'
+
+    WorkbookSearchResultItem:
+      # TODO: add the missing properties
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+      required:
+        - id
+
+    WorkbookStatus:
+      allOf:
+        - $ref: '#/components/schemas/Nominal'
+        - type: object
+          properties:
+            textcode:
+              $ref: '#/components/schemas/WorkbookStatusTextcode'
+          required:
+            - textcode
+
+    WorkbookStatusUpdateInvoice:
+      properties:
+        textcode:
+          $ref: '#/components/schemas/WorkbookStatusTextcode'
+      required:
+        - textcode
+
+    WorkbookStatusTextcode:
+      type: string
+      enum:
+        - CREATED
+        - DISCARDED
+        - SUBMITTED
+        - ASSESSED
+        - BANNED
+        - DELETED
+
+
+
+
+
+
+
+
+    PredefinitionEmbeddedProjection:
+      properties:
+        textcode:
+          type: string
+
+    TaskImageProjection:
+      required:
+        - binaryId
+        - format
+        - height
+        - width
+      properties:
+        binaryId:
+          type: string
+          format: uuid
+        format:
+          $ref: "#/components/schemas/PredefinitionEmbeddedProjection"
+        height:
+          type: number
+          format: int32
+        width:
+          type: number
+          format: int32
+        description:
+          type: string
+          minLength: 0
+
+    TaskInputDisclosedProjection:
+      required:
+        - content
+        - explanation
+      properties:
+        content:
+          type: string
+          format: text
+          pattern: ".+"
+        explanation:
+          type: string
+          format: text
+          pattern: ".+"
+
+    TaskOptionBaseProjection:
+      required:
+        - texcode
+        - content
+      properties:
+        textcode:
+          type: string
+          pattern: "[A-Z]"
+        content:
+          type: string
+          format: text
+          pattern: ".+"
+
+    TaskOptionDisclosedProjection:
+      allOf:
+        - $ref: "#/components/schemas/TaskOptionBaseProjection"
+        - type: object
+          required:
+            - correct
+            - explanation
+          properties:
+            correct:
+              type: boolean
+            explanation:
+              type: string
+              format: text
+              pattern: ".+"
+
+    TaskOptionSecretProjection:
+      allOf:
+        - $ref: "#/components/schemas/TaskOptionBaseProjection"
+
+    TaskSnippetProjection:
+      required:
+        - content
+        - style
+      properties:
+        content:
+          type: string
+          format: text
+        style:
+          $ref: "#/components/schemas/PredefinitionEmbeddedProjection"
+
+    TaskParticipantProjection:
+      properties:
+        introduction:
+          type: string
+        question:
+          type: string
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/PredefinitionEmbeddedProjection"
+        difficulty:
+            $ref: "#/components/schemas/PredefinitionEmbeddedProjection"
+        expectation:
+            $ref: "#/components/schemas/PredefinitionEmbeddedProjection"
+        images:
+          type: array
+          items:
+            type: object
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskOptionDisclosedProjection"
+        snippets:
+          type: array
+          items:
+            type: object
+
+
+    AssignmentParticipantProjection:
+      properties:
+        id:
+          type: string
+          format: uuid
+        task:
+          $ref: "#/components/schemas/TaskParticipantProjection"
+      required:
+        - id
+        - task
+
+    WorkbookParticipantProjection:
+      properties:
+        id:
+          type: string
+          format: id
+        eventId:
+          type: string
+          format: id
+        assignments:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssignmentParticipantProjection"
+        score:
+          type: number
+          format: int32
+          minimum: 0
+        scoreMaximum:
+          type: number
+          format: int32
+          minimum: 1
+        validUntil:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - ASSESSED
+            - BLOCKED
+            - CREATED
+            - DELETED
+            - DISCARDED
+            - SUBMITTED
+      required:
+        - id
+        - eventId
+        - assignments
+        - score
+        - scoreMaximum
+        - validUntil
+        - status
+
+
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  securitySchemes:
+    TokenAuthentication:
+      type: http
+      scheme: bearer
