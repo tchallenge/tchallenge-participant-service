@@ -21,7 +21,7 @@ apply plugin: 'application'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'io.franzbecker.gradle-lombok'
 
-mainClassName = 'ru.tchallenge.participant.service.Application'
+mainClassName = 'ru.tchallenge.pilot.service.Application'
 
 shadowJar {
 
