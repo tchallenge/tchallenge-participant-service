@@ -2,9 +2,7 @@ package ru.tchallenge.pilot.service.domain.workbook;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
@@ -131,6 +129,7 @@ public final class WorkbookManager {
         final Id specializationId = invoice.getSpecializationId();
         final Maturity maturity = invoice.getMaturity();
         return new WorkbookDocument()
+                .textcode(generateTextcode())
                 .assignments(prepareNewAssignments(invoice))
                 .ownerId(ownerId)
                 .eventId(eventId)
@@ -235,6 +234,12 @@ public final class WorkbookManager {
                 .data(MailData.builder().backlink(backlink).build())
                 .build();
         templateMailManager.sendAsync(templateMailInvoice);
+    }
+
+    private String generateTextcode() {
+        long serial = 1000 + this.workbookRepository.count() + 1;
+        long salt = System.currentTimeMillis() % 100;
+        return String.format("%s-%s", serial, salt);
     }
 
     private String createBacklink(final IdAware idAware) {

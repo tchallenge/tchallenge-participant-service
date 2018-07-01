@@ -31,6 +31,7 @@ public final class WorkbookProjector extends GenericProjector {
         final boolean classified = classifiedByStatus(status);
         return Workbook.builder()
                 .id(document.getId())
+                .textcode(document.getTextcode())
                 .eventId(document.getEventId())
                 .specializationId(document.getSpecializationId())
                 .ownerId(document.getOwnerId())

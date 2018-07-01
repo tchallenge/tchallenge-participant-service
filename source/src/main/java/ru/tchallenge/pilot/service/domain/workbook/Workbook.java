@@ -16,6 +16,7 @@ import ru.tchallenge.pilot.service.utility.data.IdAware;
 public final class Workbook implements IdAware {
 
     private final Id id;
+    private final String textcode;
     private final List<Assignment> assignments;
     private final Id eventId;
     private final Id specializationId;

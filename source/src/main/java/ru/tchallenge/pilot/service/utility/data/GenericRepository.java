@@ -13,6 +13,10 @@ public abstract class GenericRepository {
         this.documents = PersistenceManager.getDocumentCollection(collectionName);
     }
 
+    public long count() {
+        return this.documents.count();
+    }
+
     public void delete(final DocumentWrapper documentWrapper) {
         documentWrapper.deleteFrom(documents);
     }

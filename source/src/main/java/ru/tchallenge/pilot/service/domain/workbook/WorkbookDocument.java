@@ -21,6 +21,7 @@ public final class WorkbookDocument extends DocumentWrapper {
     private static final String ATTRIBUTE_MATURITY = "maturity";
     private static final String ATTRIBUTE_SUBMITTABLE_UNTIL = "submittableUntil";
     private static final String ATTRIBUTE_STATUS = "status";
+    private static final String ATTRIBUTE_TEXTCODE = "textcode";
 
     public WorkbookDocument() {
 
@@ -94,6 +95,15 @@ public final class WorkbookDocument extends DocumentWrapper {
 
     public WorkbookDocument status(final WorkbookStatus status) {
         document.put(ATTRIBUTE_STATUS, status.name());
+        return this;
+    }
+
+    public String getTextcode() {
+        return retrieveString(ATTRIBUTE_TEXTCODE);
+    }
+
+    public WorkbookDocument textcode(String textcode) {
+        document.put(ATTRIBUTE_TEXTCODE, textcode);
         return this;
     }
 }
