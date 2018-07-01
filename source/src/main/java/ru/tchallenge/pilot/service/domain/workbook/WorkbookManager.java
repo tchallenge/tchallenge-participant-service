@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Data;
 
+import spark.Request;
+
 import com.google.common.collect.Sets;
 
 import ru.tchallenge.pilot.service.domain.maturity.Maturity;
@@ -22,8 +24,7 @@ import ru.tchallenge.pilot.service.domain.specialization.SpecializationDocument;
 import ru.tchallenge.pilot.service.domain.specialization.SpecializationRepository;
 import ru.tchallenge.pilot.service.domain.workbook.assignment.AssignmentDocument;
 import ru.tchallenge.pilot.service.domain.workbook.assignment.AssignmentUpdateInvoice;
-import ru.tchallenge.pilot.service.security.authentication.AuthenticationContext;
-import ru.tchallenge.pilot.service.security.authentication.AuthenticationContextBean;
+import ru.tchallenge.pilot.service.security.authentication.AuthenticationRequestContext;
 import ru.tchallenge.pilot.service.utility.data.DocumentWrapper;
 import ru.tchallenge.pilot.service.utility.data.Id;
 import ru.tchallenge.pilot.service.utility.data.IdAware;
@@ -34,7 +35,6 @@ public final class WorkbookManager {
 
     public static WorkbookManager INSTANCE = new WorkbookManager();
 
-    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
     private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
     private final ProblemRepository problemRepository = ProblemRepository.INSTANCE;
     private final WorkbookProjector workbookProjector = WorkbookProjector.INSTANCE;
@@ -44,18 +44,18 @@ public final class WorkbookManager {
 
     }
 
-    public IdAware create(final WorkbookInvoice invoice) {
-        final WorkbookDocument workbookDocument = prepareNewWorkbook(invoice);
+    public IdAware create(Request request, WorkbookInvoice invoice) {
+        final WorkbookDocument workbookDocument = prepareNewWorkbook(request, invoice);
         workbookRepository.insert(workbookDocument);
         send(workbookDocument.justId());
         return workbookDocument.justId();
     }
 
-    public Workbook retrieveById(final Id id) {
-        return workbookProjector.workbook(get(id));
+    public Workbook retrieveById(Request request, Id id) {
+        return workbookProjector.workbook(get(request, id));
     }
 
-    private WorkbookDocument get(final Id id) {
+    private WorkbookDocument get(Request request, Id id) {
         final DocumentWrapper document = workbookRepository.findById(id);
         if (document == null) {
             throw new RuntimeException("Workbook is not found");
@@ -63,14 +63,14 @@ public final class WorkbookManager {
         return new WorkbookDocument(document.getDocument());
     }
 
-    public void updateAssignment(final Id id, final Integer index, final AssignmentUpdateInvoice invoice) {
-        final WorkbookDocument workbookDocument = get(id);
+    public void updateAssignment(Request request, Id id, Integer index, AssignmentUpdateInvoice invoice) {
+        final WorkbookDocument workbookDocument = get(request, id);
         workbookDocument.getAssignments().get(index - 1).setSolution(invoice.getSolution());
         workbookRepository.replace(workbookDocument);
     }
 
-    public void updateStatus(final Id id, final WorkbookStatusUpdateInvoice invoice) {
-        final WorkbookDocument workbookDocument = get(id);
+    public void updateStatus(Request request, Id id, WorkbookStatusUpdateInvoice invoice) {
+        final WorkbookDocument workbookDocument = get(request, id);
         workbookDocument.status(invoice.getStatus());
         if (invoice.getStatus() == WorkbookStatus.SUBMITTED) {
             assessWorkbook(workbookDocument);
@@ -124,8 +124,8 @@ public final class WorkbookManager {
                 .collect(Collectors.toMap(ProblemDocument::getId, p -> p));
     }
 
-    private WorkbookDocument prepareNewWorkbook(final WorkbookInvoice invoice) {
-        final String accountId = authenticatedAccountId();
+    private WorkbookDocument prepareNewWorkbook(Request request, final WorkbookInvoice invoice) {
+        final String accountId = authenticatedAccountId(request);
         final Id ownerId = new Id(accountId);
         final Id eventId = invoice.getEventId();
         final Id specializationId = invoice.getSpecializationId();
@@ -220,8 +220,8 @@ public final class WorkbookManager {
         }
     }
 
-    private String authenticatedAccountId() {
-        return authenticationContext.getAuthentication().getAccountId();
+    private String authenticatedAccountId(Request request) {
+        return new AuthenticationRequestContext(request).getAuthentication().getAccountId();
     }
 
     private final TemplateMailManager templateMailManager = TemplateMailManager.INSTANCE;

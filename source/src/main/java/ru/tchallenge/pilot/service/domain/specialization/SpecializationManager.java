@@ -3,6 +3,8 @@ package ru.tchallenge.pilot.service.domain.specialization;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import spark.Request;
+
 public final class SpecializationManager {
 
     public static final SpecializationManager INSTANCE = new SpecializationManager();
@@ -10,7 +12,7 @@ public final class SpecializationManager {
     private final SpecializationProjector specializationProjector = SpecializationProjector.INSTANCE;
     private final SpecializationRepository specializationRepository = SpecializationRepository.INSTANCE;
 
-    public List<Specialization> retrieveByAll() {
+    public List<Specialization> retrieveByAll(Request request) {
         return specializationRepository
                 .findAll()
                 .stream()

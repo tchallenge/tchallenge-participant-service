@@ -1,9 +1,10 @@
 package ru.tchallenge.pilot.service.domain.account;
 
+import spark.Request;
+
 import org.bson.Document;
 
-import ru.tchallenge.pilot.service.security.authentication.AuthenticationContext;
-import ru.tchallenge.pilot.service.security.authentication.AuthenticationContextBean;
+import ru.tchallenge.pilot.service.security.authentication.AuthenticationRequestContext;
 import ru.tchallenge.pilot.service.utility.data.DocumentWrapper;
 import ru.tchallenge.pilot.service.utility.data.Id;
 
@@ -16,20 +17,19 @@ public final class AccountManager {
     private final AccountProjector accountProjector = AccountProjector.INSTANCE;
     private final AccountRepository accountRepository = AccountRepository.INSTANCE;
     private final AccountSystemManager accountSystemManager = AccountSystemManager.INSTANCE;
-    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
 
     private AccountManager() {
 
     }
 
-    public Account retrieveCurrent() {
-        final String id = authenticatedAccountId();
+    public Account retrieveCurrent(Request request) {
+        final String id = authenticatedAccountId(request);
         final Document accountDocument = accountRepository.findById(new Id(id)).getDocument();
         return accountProjector.intoAccount(accountDocument);
     }
 
-    public void updateCurrentPassword(final AccountPasswordUpdateInvoice invoice) {
-        final String id = authenticatedAccountId();
+    public void updateCurrentPassword(Request request, final AccountPasswordUpdateInvoice invoice) {
+        final String id = authenticatedAccountId(request);
         accountPasswordValidator.validate(invoice.getDesired());
         final Document accountDocument = accountRepository.findById(new Id(id)).getDocument();
         final String passwordHash = accountDocument.getString("passwordHash");
@@ -40,16 +40,16 @@ public final class AccountManager {
         accountRepository.replace(new DocumentWrapper(accountDocument));
     }
 
-    public void updateCurrentPersonality(final AccountPersonality invoice) {
-        final String id = authenticatedAccountId();
+    public void updateCurrentPersonality(Request request, final AccountPersonality invoice) {
+        final String id = authenticatedAccountId(request);
         final Document accountDocument = accountRepository.findById(new Id(id)).getDocument();
         final Document accountPersonalityDocument = accountSystemManager.createAccountPersonalityDocument(invoice);
         accountDocument.put("personality", accountPersonalityDocument);
         accountRepository.replace(new DocumentWrapper(accountDocument));
     }
 
-    public void updateCurrentStatus(final AccountStatusUpdateInvoice invoice) {
-        final String id = authenticatedAccountId();
+    public void updateCurrentStatus(Request request, final AccountStatusUpdateInvoice invoice) {
+        final String id = authenticatedAccountId(request);
         final Document accountDocument = accountRepository.findById(new Id(id)).getDocument();
         if (!invoice.getNewStatus().equals("DELETED")) {
             throw new RuntimeException("Status is not permitted");
@@ -58,7 +58,7 @@ public final class AccountManager {
         accountRepository.replace(new DocumentWrapper(accountDocument));
     }
 
-    private String authenticatedAccountId() {
-        return authenticationContext.getAuthentication().getAccountId();
+    private String authenticatedAccountId(Request request) {
+        return new AuthenticationRequestContext(request).getAuthentication().getAccountId();
     }
 }

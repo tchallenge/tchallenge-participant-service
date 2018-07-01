@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import spark.Request;
+
 import ru.tchallenge.pilot.service.domain.problem.option.ProblemOptionDocument;
 import ru.tchallenge.pilot.service.domain.problem.option.ProblemOptionInvoice;
 import ru.tchallenge.pilot.service.domain.problem.snippet.ProblemSnippetDocument;
@@ -21,13 +23,13 @@ public final class ProblemManager {
 
     }
 
-    public IdAware create(final ProblemInvoice invoice) {
+    public IdAware create(Request request, ProblemInvoice invoice) {
         final ProblemDocument problemDocument = prepareNewProblem(invoice);
         problemRepository.insert(problemDocument);
         return problemProjector.problem(problemDocument, false);
     }
 
-    public List<Problem> retrieveAll() {
+    public List<Problem> retrieveAll(Request request) {
         return problemRepository
                 .findAll()
                 .stream()
@@ -35,7 +37,7 @@ public final class ProblemManager {
                 .collect(Collectors.toList());
     }
 
-    public List<Problem> retrieveRandom(final ProblemRandomInvoice invoice) {
+    public List<Problem> retrieveRandom(Request request, ProblemRandomInvoice invoice) {
         return problemRepository
                 .findRandom(invoice)
                 .stream()

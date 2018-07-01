@@ -3,6 +3,8 @@ package ru.tchallenge.pilot.service.security.voucher;
 import lombok.Builder;
 import lombok.Data;
 
+import spark.Request;
+
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailInvoice;
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailManager;
 import ru.tchallenge.pilot.service.utility.template.TemplateManager;
@@ -19,7 +21,7 @@ public final class SecurityVoucherFacade {
 
     }
 
-    public SecurityVoucher createAndSend(final SecurityVoucherInvoice invoice) {
+    public SecurityVoucher createAndSend(Request request, SecurityVoucherInvoice invoice) {
         final SecurityVoucher voucher = securityVoucherManager.create(invoice.getEmail());
         final String backlink = createBacklink(invoice, voucher);
         final TemplateMailInvoice templateMailInvoice = TemplateMailInvoice.builder()

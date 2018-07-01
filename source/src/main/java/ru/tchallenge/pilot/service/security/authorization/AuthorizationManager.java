@@ -1,21 +1,20 @@
 package ru.tchallenge.pilot.service.security.authorization;
 
+import spark.Request;
+
 import ru.tchallenge.pilot.service.security.authentication.Authentication;
-import ru.tchallenge.pilot.service.security.authentication.AuthenticationContext;
-import ru.tchallenge.pilot.service.security.authentication.AuthenticationContextBean;
+import ru.tchallenge.pilot.service.security.authentication.AuthenticationRequestContext;
 
 public final class AuthorizationManager {
 
     public static final AuthorizationManager INSTANCE = new AuthorizationManager();
 
-    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
-
     private AuthorizationManager() {
 
     }
 
-    public void authorize(final String affectedAccountId) {
-        final Authentication authentication = authenticationContext.getAuthentication();
+    public void authorize(Request request, String affectedAccountId) {
+        final Authentication authentication = new AuthenticationRequestContext(request).getAuthentication();
         if (!authentication.getAccountId().equals(affectedAccountId)) {
             throw notAuthorized();
         }

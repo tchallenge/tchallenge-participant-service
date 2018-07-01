@@ -2,6 +2,8 @@ package ru.tchallenge.pilot.service.domain.problem;
 
 import java.util.List;
 
+import spark.Request;
+
 import ru.tchallenge.pilot.service.utility.data.IdAware;
 import ru.tchallenge.pilot.service.utility.experimental.ExperimentalContext;
 
@@ -16,19 +18,19 @@ public final class ProblemFacade {
 
     }
 
-    public IdAware create(final ProblemInvoice invoice) {
+    public IdAware create(Request request, ProblemInvoice invoice) {
         ensureExperimentalFeaturesEnabled();
-        return problemManager.create(invoice);
+        return problemManager.create(request, invoice);
     }
 
-    public List<Problem> retrieveAll() {
+    public List<Problem> retrieveAll(Request request) {
         ensureExperimentalFeaturesEnabled();
-        return problemManager.retrieveAll();
+        return problemManager.retrieveAll(request);
     }
 
-    public List<Problem> retrieveRandom(final ProblemRandomInvoice invoice) {
+    public List<Problem> retrieveRandom(Request request, ProblemRandomInvoice invoice) {
         ensureExperimentalFeaturesEnabled();
-        return problemManager.retrieveRandom(invoice);
+        return problemManager.retrieveRandom(request, invoice);
     }
 
     private void ensureExperimentalFeaturesEnabled() {

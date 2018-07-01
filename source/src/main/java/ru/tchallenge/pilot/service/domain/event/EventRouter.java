@@ -25,12 +25,12 @@ public final class EventRouter implements RouteGroup {
         path("events/", () -> {
             get("/", (request, response) -> {
                 final EventSearchInvoice invoice = searchInvoice(request);
-                final EventSearchResult result = eventManager.retrieveSearchResult(invoice);
+                final EventSearchResult result = eventManager.retrieveSearchResult(request, invoice);
                 return Json.json(result, response);
             });
             get("/:id", (request, response) -> {
                 final Id id = new Id(request.params("id"));
-                final Event result = eventManager.retrieveById(id);
+                final Event result = eventManager.retrieveById(request, id);
                 return Json.json(result, response);
             });
         });

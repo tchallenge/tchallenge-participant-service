@@ -21,7 +21,7 @@ public final class SecurityRegistrationRouter implements RouteGroup {
         path("/registrations", () -> {
             post("/", (request, response) -> {
                 final SecurityRegistrationInvoice invoice = Json.body(SecurityRegistrationInvoice.class, request);
-                final SecurityRegistration registration = securityRegistrationFacade.createAndSendVoucher(invoice);
+                final SecurityRegistration registration = securityRegistrationFacade.createAndSendVoucher(request, invoice);
                 return Json.json(registration.getId(), response);
             });
         });

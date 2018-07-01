@@ -1,36 +1,36 @@
 package ru.tchallenge.pilot.service.security.token;
 
-import ru.tchallenge.pilot.service.security.authentication.AuthenticationContext;
-import ru.tchallenge.pilot.service.security.authentication.AuthenticationContextBean;
+import spark.Request;
+
+import ru.tchallenge.pilot.service.security.authentication.AuthenticationRequestContext;
 
 public final class TokenFacade {
 
     public static final TokenFacade INSTANCE = new TokenFacade();
 
     private final TokenManager tokenManager = TokenManager.INSTANCE;
-    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
 
     private TokenFacade() {
 
     }
 
-    public SecurityToken createForCurrentAccount() {
-        return tokenManager.create(getCurrentAccountId());
+    public SecurityToken createForCurrentAccount(Request request) {
+        return tokenManager.create(getCurrentAccountId(request));
     }
 
-    public SecurityToken retrieveCurrent() {
-        return tokenManager.retrieveByPayload(getCurrentTokenPayload());
+    public SecurityToken retrieveCurrent(Request request) {
+        return tokenManager.retrieveByPayload(getCurrentTokenPayload(request));
     }
 
-    public void deleteCurrent() {
-        tokenManager.deleteByPayload(getCurrentTokenPayload());
+    public void deleteCurrent(Request request) {
+        tokenManager.deleteByPayload(getCurrentTokenPayload(request));
     }
 
-    private String getCurrentAccountId() {
-        return authenticationContext.getAuthentication().getAccountId();
+    private String getCurrentAccountId(Request request) {
+        return new AuthenticationRequestContext(request).getAuthentication().getAccountId();
     }
 
-    private String getCurrentTokenPayload() {
-        return authenticationContext.getAuthentication().getTokenPayload();
+    private String getCurrentTokenPayload(Request request) {
+        return new AuthenticationRequestContext(request).getAuthentication().getTokenPayload();
     }
 }

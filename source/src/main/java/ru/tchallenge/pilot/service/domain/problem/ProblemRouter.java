@@ -22,17 +22,17 @@ public final class ProblemRouter implements RouteGroup {
     public void addRoutes() {
         path("/problems", () -> {
             get("/", (request, response) -> {
-                final List<Problem> problems = problemFacade.retrieveAll();
+                final List<Problem> problems = problemFacade.retrieveAll(request);
                 return Json.json(problems, response);
             });
             post("/", (request, response) -> {
                 final ProblemInvoice invoice = Json.body(ProblemInvoice.class, request);
-                final IdAware idAware = problemFacade.create(invoice);
+                final IdAware idAware = problemFacade.create(request, invoice);
                 return Json.json(idAware.justId(), response);
             });
             post("/random", (request, response) -> {
                 final ProblemRandomInvoice invoice = Json.body(ProblemRandomInvoice.class, request);
-                final List<Problem> problems = problemFacade.retrieveRandom(invoice);
+                final List<Problem> problems = problemFacade.retrieveRandom(request, invoice);
                 return Json.json(problems, response);
             });
         });

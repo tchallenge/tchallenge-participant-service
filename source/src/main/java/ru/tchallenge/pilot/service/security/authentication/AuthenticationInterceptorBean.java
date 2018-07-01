@@ -19,7 +19,6 @@ public final class AuthenticationInterceptorBean implements AuthenticationInterc
     private final Collection<SimpleEndpointSignature> authorizationByInvoice;
     private final String authorizationHeaderName = "Authorization";
     private final String authorizationHeaderPrefix = "BEARER ";
-    private final AuthenticationContext authenticationContext = AuthenticationContextBean.INSTANCE;
     private final AuthenticationManager authenticationManager = AuthenticationManager.INSTANCE;
     private final SecurityTokenContext securityTokenContext = SecurityTokenContext.INSTANCE;
 
@@ -35,7 +34,7 @@ public final class AuthenticationInterceptorBean implements AuthenticationInterc
     @Override
     public void before(final Request request, final Response response) {
         final Authentication authentication = createAuthentication(request);
-        authenticationContext.setAuthentication(authentication);
+        new AuthenticationRequestContext(request).setAuthentication(authentication);
     }
 
     private void provideNewTokenPayloadIfPossible(final Response response) {

@@ -20,7 +20,7 @@ public final class SpecializationRouter implements RouteGroup {
     @Override
     public void addRoutes() {
         path("/specializations", () -> {
-            get("/", (request, response) -> Json.json(specializationManager.retrieveByAll(), response));
+            get("/", (request, response) -> Json.json(specializationManager.retrieveByAll(request), response));
         });
     }
 }

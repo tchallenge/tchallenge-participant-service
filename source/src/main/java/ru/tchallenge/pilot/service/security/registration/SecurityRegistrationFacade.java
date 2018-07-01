@@ -3,6 +3,8 @@ package ru.tchallenge.pilot.service.security.registration;
 import lombok.Builder;
 import lombok.Data;
 
+import spark.Request;
+
 import ru.tchallenge.pilot.service.security.voucher.SecurityVoucher;
 import ru.tchallenge.pilot.service.security.voucher.SecurityVoucherManager;
 import ru.tchallenge.pilot.service.utility.mail.TemplateMailInvoice;
@@ -22,7 +24,7 @@ public final class SecurityRegistrationFacade {
 
     }
 
-    public SecurityRegistration createAndSendVoucher(final SecurityRegistrationInvoice invoice) {
+    public SecurityRegistration createAndSendVoucher(Request request, SecurityRegistrationInvoice invoice) {
         final SecurityRegistration result = securityRegistrationManager.create(invoice);
         createVoucherAndSend(invoice);
         return result;
