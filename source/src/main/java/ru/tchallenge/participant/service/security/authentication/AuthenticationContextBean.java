@@ -1,6 +1,5 @@
 package ru.tchallenge.participant.service.security.authentication;
 
-import java.util.Objects;
 import java.util.Optional;
 
 public final class AuthenticationContextBean implements AuthenticationContext {
@@ -35,7 +34,6 @@ public final class AuthenticationContextBean implements AuthenticationContext {
 
     @Override
     public void setAuthentication(final Authentication authentication) {
-        Objects.requireNonNull(authentication, "Authentication cannot be null");
         authenticationContainer.set(authentication);
     }
 

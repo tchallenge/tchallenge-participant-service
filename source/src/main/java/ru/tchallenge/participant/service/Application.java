@@ -19,6 +19,7 @@ import ru.tchallenge.participant.service.domain.specialization.SpecializationRou
 import ru.tchallenge.participant.service.domain.workbook.WorkbookRouter;
 import ru.tchallenge.participant.service.security.SecurityRouter;
 import ru.tchallenge.participant.service.security.authentication.AuthenticationInterceptor;
+import ru.tchallenge.participant.service.security.authentication.AuthenticationInterceptorBean;
 import static ru.tchallenge.participant.service.utility.serialization.Json.json;
 
 @Slf4j
@@ -29,7 +30,7 @@ public final class Application implements Runnable {
     }
 
     private final AccountRouter accountRouter = AccountRouter.INSTANCE;
-    private final AuthenticationInterceptor authenticationInterceptor = AuthenticationInterceptor.INSTANCE;
+    private final AuthenticationInterceptor authenticationInterceptor = AuthenticationInterceptorBean.INSTANCE;
     private final EventRouter eventRouter = EventRouter.INSTANCE;
     private final ProblemRouter problemRouter = ProblemRouter.INSTANCE;
     private final SecurityRouter securityRouter = SecurityRouter.INSTANCE;
