@@ -24,8 +24,8 @@ TCHALLENGE_EXPERIMENTAL_FEATURES_ENABLED='true'
 TCHALLENGE_SECURITY_TOKEN_PREDEFINED_ENABLED='true'
 ```
 
-Run gradle bootRun task:
+Run runShadow task:
 ```
 > cd source
-> gradlew bootRun
+> gradlew runShadow
 ```
